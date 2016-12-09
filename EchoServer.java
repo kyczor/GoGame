@@ -1,6 +1,9 @@
 
 import java.io.*;
 import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 
 public class EchoServer
 {
@@ -22,7 +25,7 @@ public class EchoServer
 		try
 		{
 			int i;
-			//int[][] tab;
+			int[][] ourTab;
 			Board board=new Board();
 			while (true)
 			{
@@ -30,13 +33,16 @@ public class EchoServer
 				Socket client = server.accept();
 				BufferedReader r = new BufferedReader(new InputStreamReader(client.getInputStream()));
 				PrintWriter w = new PrintWriter(client.getOutputStream(), true);
+				ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+				ObjectOutputStream ous = new ObjectOutputStream(client.getOutputStream());
+
 				w.println("Welcome to the Java GoServer.  Type 'bye' to close.  Select table size ( 3/9/19/29 )");
 				String line;
 				line = r.readLine();
 				if(line.trim().equals("3") || line.trim().equals("9") || line.trim().equals("19") || line.trim().equals("29"))
 				{
 					i = Integer.parseInt(line);
-					board.InitTable(i); //should create a 2-dimensional table filled with 0's  (size: i)
+				ourTab = board.InitTable(i); //should create a 2-dimensional table filled with 0's  (size: i)
 
 				//	tab = new int[i][i];
 				//	for( int a=0; a<i; a++)
@@ -56,7 +62,7 @@ public class EchoServer
 				
 				do
 				{
-					w.println(line);
+					ous.println(ourTab);
 				
 				//	line = r.readLine();
 					if ( line != null )
