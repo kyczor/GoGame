@@ -1,2 +1,2 @@
 # GoGame
-gra w go
+A two player go game.
