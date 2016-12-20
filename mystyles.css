@@ -1,0 +1,8 @@
+.nice_background
+{
+    -fx-background-color: #c7ecff;
+}
+.nice_background .button
+{
+    -fx-background-color: #b5dcff;
+}
