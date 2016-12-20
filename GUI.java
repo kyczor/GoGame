@@ -1,10 +1,12 @@
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -15,10 +17,22 @@ import javafx.stage.Stage;
  */
 public class GUI extends Application
 {
+	int size;
+
+	public EchoClient client;
+
+	public GUI()
+	{
+		client = new EchoClient();
+		//client.start();
+		size = 9;
+	}
+
 	public static void main(String[] args)
 	{
 		launch(args);
 	}
+
 	@Override
 	public void start(Stage stage) throws Exception
 	{
@@ -78,11 +92,33 @@ public class GUI extends Application
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		drawShapes(gc); //this will draw my board
 		root.getChildren().add(canvas);
+		canvas.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				double x = event.getSceneX();
+				double y = event.getSceneY();
+				int x1,y1;
+				x1 =  (int)((x-(400/(size+1)))/(800/(size+1)));
+				y1 =  (int)((y-(400/(size+1)))/(800/(size+1)));
+				System.out.println("move");
+
+
+			}
+		});
 	}
 
 	private void drawShapes(GraphicsContext gc)
 	{
 		gc.setFill(Color.rgb(130,140,255));
 		gc.fillRect(20,20,760,760);
+		for(int i=0; i<size; i++)
+		{
+			//draws a grid (board field)
+			gc.strokeLine((i+1)*(800/(size+1)), 800/(size+1), (i+1)*(800/(size+1)), 800-(800/(size+1)));
+			gc.strokeLine(800/(size+1), (i+1)*800/(size+1), 800-(800/(size+1)), (i+1)*(800/(size+1)));
+		}
+	//
 	}
 }

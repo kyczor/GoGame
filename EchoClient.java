@@ -36,7 +36,7 @@ import java.net.*;
  * @author Karola
  * @see ServerClient - connects clients with server
  */
-public class EchoClient
+public class EchoClient extends Thread
 {
 	private static ObjectOutputStream oos;
 	private static BufferedReader console;
@@ -55,11 +55,12 @@ public class EchoClient
 	 * Connects to the game's server. Repeatedly reads objects (table) sent by server and (TODO GUI) displays it on the player's screen.
 	 * After a player makes a move - sends a string with appropriate message to server.
 	 * When the message is "bye", the client closes itself.
-	 * 
-	 * @param args
 	 */
-	public static void main(String[] args)
+	@Override
+	public synchronized void start()
 	{
+		super.start();
+
 		Socket s = null;
 		try
 		{
@@ -71,17 +72,17 @@ public class EchoClient
 			oos.flush();
 			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
 			console = new BufferedReader(new InputStreamReader(System.in));
-			
-			
+
+
 			Object obj = ois.readObject();
 			if(obj instanceof String)
 			{
 				String msg = (String)obj;
 				System.out.println(msg);
 			}
-			
+
 			end = false;
-			
+
 			do
 			{
 				obj = ois.readObject();
@@ -116,7 +117,7 @@ public class EchoClient
 				}
 			}
 			while (!end);
-			
+
 			s.close();
 		}
 		catch (Exception err)
@@ -125,4 +126,3 @@ public class EchoClient
 		}
 	}
 }
-

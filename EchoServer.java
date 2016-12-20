@@ -1,9 +1,6 @@
 
 import java.io.*;
-import java.net.*;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
 
 /**
  * GAME'S SERVER
@@ -68,8 +65,8 @@ public class EchoServer
 				
 				System.out.println("Two Clients connected");
 				
-				client1.Write("Youre white.");
-				client2.Write("Youre black");
+				client1.Write("Youre black.");
+				client2.Write("Youre white.");
 				
 				client1.Write("size");
 				String tabSize = client1.ReadAsString();
