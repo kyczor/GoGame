@@ -13,6 +13,8 @@ import java.net.ServerSocket;
  */
 public class EchoServer
 {
+	private ServerSocket server;
+	private ServerClient client1=null, client2=null;
 	
 	/**
 	 * Creates a socket (at a specific port)
@@ -170,6 +172,4 @@ public class EchoServer
 	}
 
 
-	private ServerSocket server;
-	private ServerClient client1=null, client2=null;
 }

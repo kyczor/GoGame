@@ -12,12 +12,20 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Karola on 2016-12-20.
  */
 public class GUI extends Application
 {
+	enum whoseField
+	{
+		empty, black, white
+	}
 	int size;
+	ArrayList<ArrayList<whoseField>> fields;
 
 	public EchoClient client;
 
@@ -26,6 +34,19 @@ public class GUI extends Application
 		client = new EchoClient();
 		//client.start();
 		size = 9;
+
+		fields = new ArrayList<ArrayList<whoseField>>();
+		for(int i=0; i<size; i++)
+		{
+			fields.add(new ArrayList<whoseField> ());
+			for(int j=0; j<size; j++)
+			{
+				fields.get(i).add(whoseField.empty);
+			}
+		}
+	//TEST
+		fields.get(5).set(6, whoseField.white);
+		fields.get(2).set(3, whoseField.black);
 	}
 
 	public static void main(String[] args)
@@ -102,9 +123,10 @@ public class GUI extends Application
 				int x1,y1;
 				x1 =  (int)((x-(400/(size+1)))/(800/(size+1)));
 				y1 =  (int)((y-(400/(size+1)))/(800/(size+1)));
-				System.out.println("move");
-
-
+		//		TODO: a function that sends x1,y1 as (x,y) coordinates to client (/server?)  -- > server         which handles the move     as a result we get a refreshed board (after the move)
+			//bool - is the move legal?
+				// yes - refresh your board and disable gui changes
+				// no - pop up window with error message
 			}
 		});
 	}
@@ -119,6 +141,27 @@ public class GUI extends Application
 			gc.strokeLine((i+1)*(800/(size+1)), 800/(size+1), (i+1)*(800/(size+1)), 800-(800/(size+1)));
 			gc.strokeLine(800/(size+1), (i+1)*800/(size+1), 800-(800/(size+1)), (i+1)*(800/(size+1)));
 		}
-	//
+
+		/*
+			The following loop checks ownership of every field and draws every pawn.
+		 */
+		double r = (800/(size+1))*0.25;
+		for(int j=0; j<size; j++)
+		{
+			for(int k=0; k<size; k++)
+			{
+				if (fields.get(j).get(k) == whoseField.black)
+				{
+					gc.setFill(Color.rgb(0,0,0));
+					gc.fillOval( (800/(size+1))+ j*(800/(size+1))-r,(800/(size+1))+ k*(800/(size+1))-r, 2*r, 2*r);
+				}
+				else if (fields.get(j).get(k) == whoseField.white)
+				{
+					gc.setFill(Color.rgb(255,255,255));
+					gc.fillOval( (800/(size+1))+ j*(800/(size+1))- r,(800/(size+1))+ k*(800/(size+1))-r, 2*r, 2*r);
+				}
+			}
+		}
 	}
+
 }

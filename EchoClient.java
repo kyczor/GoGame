@@ -115,6 +115,10 @@ public class EchoClient extends Thread
 						SendAnswer(console.readLine());
 					}
 				}
+				else if (obj instanceof NewMove)
+				{
+
+				}
 			}
 			while (!end);
 
