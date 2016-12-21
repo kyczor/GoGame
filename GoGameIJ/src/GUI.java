@@ -27,7 +27,7 @@ public class GUI extends Application
 	Canvas canvas;
 
 	public EchoClient client;
-
+//uczymy sie gita
 	public GUI()
 	{
 		client = new EchoClient("localhost", 9000, this);
