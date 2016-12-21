@@ -80,6 +80,7 @@ public class EchoServer
 			//connects two clients
 			System.out.println("Two Clients connected");
 
+			Thread.sleep(2000);
 			client1.color = whosefield.black;
 			client2.color = whosefield.white;
 			client1.Write(new Command("B", board));  // sends an empty board to both players
@@ -89,12 +90,13 @@ public class EchoServer
 			boolean end = false;
 			while (!end)
 			{
-				actualPlayer.Write(new Command("MOVE", board));
 				while (true)
 				{
+					actualPlayer.Write(new Command("MOVE", board));
 					Command c = actualPlayer.Read();
 					if (c.type.equals("MOVE") && board.putPawn(actualPlayer.color, c.getX(), c.getY()))
 					{
+						actualPlayer.Write(new Command(actualPlayer.color == whosefield.white ? "W" : "B",board));
 						break;
 					}
 

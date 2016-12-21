@@ -8,11 +8,12 @@ import java.util.List;
 
 /**
  * This class can create a new table.
+ *
  * @author Karola
  * @see EchoServer
- *
  */
-public class Board implements Serializable {
+public class Board implements Serializable
+{
 
 	ArrayList<ArrayList<whosefield>> tab;
 	int i;
@@ -35,14 +36,14 @@ public class Board implements Serializable {
 		}
 	}
 
-	public int getSize ()
+	public int getSize()
 	{
 		return i;
 	}
 
-	public boolean putPawn (whosefield col, int x, int y)
+	public boolean putPawn(whosefield col, int x, int y)
 	{
-		if(getField(x,y) == whosefield.empty)
+		if (getField(x, y) == whosefield.empty)
 		{
 			tab.get(x).set(y, col);
 			return true;
@@ -50,20 +51,38 @@ public class Board implements Serializable {
 		return false;
 	}
 
-	public whosefield getField (int x, int y)
+	public whosefield getField(int x, int y)
 	{
 		return tab.get(x).get(y);
 	}
 
 
 	private void writeObject(ObjectOutputStream oos)
-			throws IOException {
-		oos.writeObject(tab);
+			throws IOException
+	{
+		oos.writeObject(i);
+		for (int a = 0; a < i; a++)
+		{
+			for (int b = 0; b < i; b++)
+			{
+				oos.writeObject(getField(a,b).toInt());// 0 = empty field
+			}
+		}
 	}
 
 	private void readObject(ObjectInputStream ois)
-			throws ClassNotFoundException, IOException {
-		tab = (ArrayList) ois.readObject();
+			throws ClassNotFoundException, IOException
+	{
+		i = (Integer) ois.readObject();
+		tab = new ArrayList<>();
+		for (int a = 0; a < i; a++)
+		{
+			tab.add(new ArrayList<>());
+			for (int b = 0; b < i; b++)
+			{
+				tab.get(a).add(whosefield.fromInt((Integer)ois.readObject()));// 0 = empty field
+			}
+		}
 
 	}
 }

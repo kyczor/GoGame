@@ -24,6 +24,7 @@ public class GUI extends Application
 
 	//int size;
 	Board board;
+	Canvas canvas;
 
 	public EchoClient client;
 
@@ -61,7 +62,8 @@ public class GUI extends Application
 		root = new HBox();
 
 		setLeftPanel();
-
+		canvas = new Canvas(800,800);
+		root.getChildren().add(canvas);
 
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add("mystyles.css");
@@ -106,17 +108,15 @@ public class GUI extends Application
 	public void drawBoard(Board fboard)
 	{
 		this.board = fboard;
-		Canvas canvas = new Canvas(800,800);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		drawShapes(gc, board); //this will draw my board
-		root.getChildren().add(canvas);
 		canvas.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
 			@Override
 			public void handle(MouseEvent event)
 			{
-				double x = event.getSceneX();
-				double y = event.getSceneY();
+				double x = event.getX();
+				double y = event.getY();
 				int x1,y1;
 				int size = board.getSize();
 				x1 =  (int)((x-(400/(size+1)))/(800/(size+1)));
@@ -134,6 +134,7 @@ public class GUI extends Application
 	private void drawShapes(GraphicsContext gc, Board board)
 	{
 		int size = board.getSize();
+		gc.clearRect(0,0,800,800);
 		gc.setFill(Color.rgb(130,140,255));
 		gc.fillRect(20,20,760,760);
 		for(int i=0; i<size; i++)
