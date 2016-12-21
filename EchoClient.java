@@ -28,28 +28,75 @@ public class CLIENTTT
 }
 */
 
+import javafx.application.Platform;
+
 import java.io.*;
 import java.net.*;
+
 /**
  * A client that demands connection with the server. In the future it's going to contain the whole GUI.
  * When a player sends a "bye"-message, it shuts itself down.
+ *
  * @author Karola
  * @see ServerClient - connects clients with server
  */
-public class EchoClient extends Thread
+public class EchoClient implements Runnable
 {
-	private static ObjectOutputStream oos;
-	private static BufferedReader console;
-	private static boolean end;
-	
-	public static void SendAnswer(String ret) throws IOException
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
+	private volatile boolean end;
+	private GUI gui;
+	private boolean movemaking = false;
+
+	public EchoClient(String host, int port, GUI gui)
 	{
-		if(ret.equals("bye"))
-			end = true;
-		
-		oos.writeObject(ret);
-		oos.flush();
+		this.gui = gui;
+		Socket s;
+		try
+		{
+			s = new Socket(host, port);
+			System.out.println("Socket created");
+			oos = new ObjectOutputStream(s.getOutputStream());
+			ois = new ObjectInputStream(s.getInputStream());
+			ois.readObject();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		new Thread(this).start();
 	}
+
+
+	public void SendCommand(Command command)
+	{
+		try
+		{
+			if (command.type == "MOVE" && movemaking)
+			{
+				oos.writeObject(command);
+				movemaking = false;
+			} else if (command.type == "GIVEUP" && movemaking)
+			{
+				oos.writeObject(command);
+				movemaking = false; // a client can no longer make moves
+			} else if (command.type == "PASS" && movemaking)
+			{
+				oos.writeObject(command);
+				movemaking = false;
+			} else if (command.type == "COUNTP")
+			{
+				oos.writeObject(command);
+			} else if (command.type == "ENDGAME")
+			{
+				oos.writeObject(command);
+				movemaking = false;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Main Client method.
 	 * Connects to the game's server. Repeatedly reads objects (table) sent by server and (TODO GUI) displays it on the player's screen.
@@ -57,76 +104,117 @@ public class EchoClient extends Thread
 	 * When the message is "bye", the client closes itself.
 	 */
 	@Override
-	public synchronized void start()
+	public void run()
 	{
-		super.start();
-
-		Socket s = null;
-		try
+		while (!end)
 		{
-			s = new Socket("127.0.0.1", 9995);
-			System.out.println("Socket created");
-			BufferedReader r = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			PrintWriter w = new PrintWriter(s.getOutputStream(), true);
-			oos = new ObjectOutputStream(s.getOutputStream());
-			oos.flush();
-			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-			console = new BufferedReader(new InputStreamReader(System.in));
-
-
-			Object obj = ois.readObject();
-			if(obj instanceof String)
+			try
 			{
-				String msg = (String)obj;
-				System.out.println(msg);
-			}
-
-			end = false;
-
-			do
+				Thread.sleep(1000);
+			} catch (Exception e)
 			{
-				obj = ois.readObject();
-				if(obj instanceof String)
-				{
-					String msg = (String)obj;
-					if(msg.equals("Board"))
-					{
-						Board board = new Board();
-						board.readFromStream(ois);
-						board.Print();
-						SendAnswer(console.readLine());
-					}
-					else if(msg.equals("bye"))
-					{
-						System.out.println("Your opponent has left.");
-						end = true;
-					}
-					else if(msg.equals("size"))
-					{
-						System.out.println("3/9/19/29");
-						String ret = console.readLine();
-						Integer size = Integer.parseInt(ret);
-						//TODO: validate input and try/catch parseInt
-						SendAnswer(size.toString());
-					}
-					else
-					{
-						System.out.println(msg);
-						SendAnswer(console.readLine());
-					}
-				}
-				else if (obj instanceof NewMove)
-				{
-
-				}
+				e.printStackTrace();
 			}
-			while (!end);
+			try
+			{
 
-			s.close();
+				Command c = (Command) ois.readObject();
+				switch (c.type)
+				{
+					case "MOVE":
+						movemaking = true;
+						Platform.runLater(() -> {
+							gui.drawBoard(c.board);
+						});
+						break;
+					case "B":
+						Platform.runLater(() -> {
+							gui.drawBoard(c.board);
+						});
+						break;
+					case "W":
+						Platform.runLater(() -> {
+							gui.drawBoard(c.board);
+						});
+						break;
+					default:
+						break;
+				}
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch (Exception err)
-		{
-			System.err.println(err);
-		}
+
+
+//		super.start();
+//
+//		Socket s = null;
+//		try
+//		{
+//			s = new Socket("127.0.0.1", 9995);
+//			System.out.println("Socket created");
+//			BufferedReader r = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//			PrintWriter w = new PrintWriter(s.getOutputStream(), true);
+//			oos = new ObjectOutputStream(s.getOutputStream());
+//			oos.flush();
+//			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+//			console = new BufferedReader(new InputStreamReader(System.in));
+//
+//
+//			Object obj = ois.readObject();
+//			if(obj instanceof String)
+//			{
+//				String msg = (String)obj;
+//				System.out.println(msg);
+//			}
+//
+//			end = false;
+//
+//			do
+//			{
+//				obj = ois.readObject();
+//				if(obj instanceof String)
+//				{
+//					String msg = (String)obj;
+//					if(msg.equals("Board"))
+//					{
+//						Board board = new Board();
+//					board.readFromStream(ois);
+//						board.Print();
+//						SendAnswer(console.readLine());
+//					}
+//					else if(msg.equals("bye"))
+//					{
+//						System.out.println("Your opponent has left.");
+//						end = true;
+//					}
+//					else if(msg.equals("size"))
+//					{
+//						System.out.println("3/9/19/29");
+//						String ret = console.readLine();
+//						Integer size = Integer.parseInt(ret);
+//						//TODO: validate input and try/catch parseInt
+//						SendAnswer(size.toString());
+//					}
+//					else
+//					{
+//						System.out.println(msg);
+//						SendAnswer(console.readLine());
+//					}
+//				}
+//				else if (obj instanceof NewMove)
+//				{
+//
+//				}
+//			}
+//			while (!end);
+//
+//			s.close();
+//		}
+//		catch (Exception err)
+//		{
+//			System.err.println(err);
+//		}
 	}
 }

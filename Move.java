@@ -5,23 +5,18 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 
-//try{
-
-public class Move implements Functions {
-
-	// ArrayException exception = new ArrayException();
-	public int size = 6;
+public class Move {
+	private int size = 6;
 	private Object[][] board = new Object[size][size];
-	public List<List<Point>> allBlackLists = new ArrayList<>();
+	private List<List<Point>> allBlackLists = new ArrayList<>();
 	private List<List<Point>> allWhiteLists = new ArrayList<>();
 	private int blackStones = 50;
 	private int whiteStones = 50;
 	private int empty;
 	private int friends;
-	public Point[] friendsLocation;
+	private Point[] friendsLocation;
 
 	public Move() {
 		for (Object[] row : board)
@@ -50,39 +45,27 @@ public class Move implements Functions {
 				+ " -- " + board[5][4] + " -- " + board[5][5]);
 	}
 
-	public void game() throws ArrayException {
-		int row = 0;
-		int column = 0;
+	public void game() {
+		int row;
+		int column;
 		int i = 1;
 		boolean checkKo = false;
 		Integer blackPlayer = 1;
 		Integer whitePlayer = 0;
 		Scanner sc = new Scanner(System.in);
 		String player = "BLACK";
-		System.out.println("Game you with bot yes press 1, when you will play with somebody press 2");
-		int input = sc.nextInt();
 		while (blackStones != 0 || whiteStones != 0) {
 			boolean failure = true;
 
 			if (i % 2 != 0) {
 				while (failure) {
-					// System.out.println("White stones = " + whiteStones +
-					// "
-					// Black stones = " + blackStones);
-					System.out.println("Player " + player);
-					System.out.println("Move nr " + i);
-					System.out.println("Give row: ");
+					System.out.println("White stones = " + whiteStones + " Black stones = " + blackStones);
+					System.out.println("Player " + player + ".");
+					System.out.println("Move nr " + i + ".");
+					System.out.print("Give row: ");
 					row = sc.nextInt();
-					if (row > size)
-						throw new ArrayException(" liczba spoza zakresu");
-					// throw new ArrayIndexOutOfBoundsException();
-					// exception.sendMessage();
-					System.out.println("Give column: ");
+					System.out.print("Give column: ");
 					column = sc.nextInt();
-					if (column > size)
-						throw new ArrayException(" liczba spoza zakresu");
-					// throw new ArrayIndexOutOfBoundsException();
-					// exception.sendMessage();
 					empty = 0;
 					lookAround(row, column, null, false);
 					if (isEmpty(row, column)) {
@@ -116,34 +99,13 @@ public class Move implements Functions {
 				}
 			} else {
 				while (failure) {
-					// System.out.println("White stones = " + whiteStones +
-					// "
-					// Black stones = " + blackStones);
-
-					if (input == 1) {
-						System.out.println("Bot " + player + ".");
-						System.out.println("Move nr " + i + ".");
-
-						Random rand1 = new Random();
-						Random rand2 = new Random();
-						row = rand1.nextInt(6);
-
-						column = rand2.nextInt(6);
-						System.out.println("miejscar" + row + " " + column);
-					}
-
-					else if (input == 2) {
-						System.out.println("Player " + player + ".");
-						System.out.println("Move nr " + i + ".");
-						System.out.println("Give row: ");
-						row = sc.nextInt();
-						System.out.println("Give column: ");
-						column = sc.nextInt();
-					}
-
-					else
-						throw new ArrayException("nieznany znak");
-
+					System.out.println("White stones = " + whiteStones + " Black stones = " + blackStones);
+					System.out.println("Player " + player + ".");
+					System.out.println("Move nr " + i + ".");
+					System.out.print("Give row: ");
+					row = sc.nextInt();
+					System.out.print("Give column: ");
+					column = sc.nextInt();
 					empty = 0;
 					lookAround(row, column, null, false);
 					if (isEmpty(row, column)) {
@@ -244,7 +206,7 @@ public class Move implements Functions {
 			friendsList = allWhiteLists;
 		}
 		List<Point> masterList = new ArrayList<>(); // NOWA LISTA, DO KTOREJ
-													// MIGRUJA WSZYSTKIE PUNKTY
+		// MIGRUJA WSZYSTKIE PUNKTY
 		for (List<Point> aFriendsList : friendsList) {
 			for (int i = 0; i < aFriendsList.size(); i++) {
 				if (aFriendsList.get(i).getX() == friend[0].getX() && aFriendsList.get(i).getY() == friend[0].getY()) {
@@ -286,45 +248,45 @@ public class Move implements Functions {
 			}
 			for (int j = 0; j < friends; j++) { // DLA KAZDEGO PRZYJACIELA
 				for (List<Point> aFriendsList : friendsList) { // DLA KAZDEGO
-																// ELEMENTU
-																// LISTY
-																// ZEWNETRZNEJ
+					// ELEMENTU
+					// LISTY
+					// ZEWNETRZNEJ
 					for (int i = 0; i < aFriendsList.size(); i++) { // DLA
-																	// KAZDEGO
-																	// ELEMENTU
-																	// LISTY
-																	// WEWNETRZNEJ
+						// KAZDEGO
+						// ELEMENTU
+						// LISTY
+						// WEWNETRZNEJ
 						if (aFriendsList.get(i).getX() == friendsLocation[j].getX()
 								&& aFriendsList.get(i).getY() == friendsLocation[j].getY()) { // JESLI
-																								// WSPOLRZEDNA
-																								// X-OWA
-																								// I
-																								// Y-OWA
-																								// ELEMENTU
-																								// LISTY
-																								// WEWNETRZNEJ
-																								// =
-																								// PUNKTU
-																								// PRZYJACIELA
-																								// W
-																								// POBLIZU
+							// WSPOLRZEDNA
+							// X-OWA
+							// I
+							// Y-OWA
+							// ELEMENTU
+							// LISTY
+							// WEWNETRZNEJ
+							// =
+							// PUNKTU
+							// PRZYJACIELA
+							// W
+							// POBLIZU
 							toRemoveMap.put(j, aFriendsList); // ZAPAMIETUJE
-																// LISTE
-																// (CHAINA)
-																// PRZYJACIELA O
-																// INDEKSIE "j"
+							// LISTE
+							// (CHAINA)
+							// PRZYJACIELA O
+							// INDEKSIE "j"
 							for (int k = 0; k < aFriendsList.size(); k++) {
 								empty = 0;
 								lookAround((int) aFriendsList.get(k).getX(), (int) aFriendsList.get(k).getY(), null,
 										true); // TRUE = PUSTE MIEJSCA JUZ
-												// SPRAWDZONE ZAZNACZONE SA "#"
+								// SPRAWDZONE ZAZNACZONE SA "#"
 								sumEmpty[j] = sumEmpty[j] + empty; // ZLICZANIE
-																	// WOLNYCH
-																	// MIEJSC DO
-																	// OKOLA
-																	// KAZDEGO
-																	// ELEMENTU
-																	// CHAINA
+								// WOLNYCH
+								// MIEJSC DO
+								// OKOLA
+								// KAZDEGO
+								// ELEMENTU
+								// CHAINA
 							}
 							cleanEmpty();
 						}
@@ -332,7 +294,7 @@ public class Move implements Functions {
 				}
 				System.out.println(j + " The sum of breaths = " + sumEmpty[j]);
 				if (sumEmpty[j] == 0) { // JESLI SUMA PUSTYCH MIEJSC DO OKOLA
-										// CHAINA O INDEKSIE "j" JEST = 0
+					// CHAINA O INDEKSIE "j" JEST = 0
 					removeList(j, toRemoveMap, friendsList);
 				}
 			}
@@ -343,14 +305,14 @@ public class Move implements Functions {
 		System.out.println("BLACK = " + allBlackLists);
 		System.out.println("WHITE = " + allWhiteLists);
 		for (Point point : map.get(index)) { // DLA KAZDEGO ELEMENTU
-												// ZAPAMIETANEJ LISTY O INDEKSIE
-												// "j"
+			// ZAPAMIETANEJ LISTY O INDEKSIE
+			// "j"
 			board[(int) point.getX()][(int) point.getY()] = "+"; // CZYSZCZENIE
-																	// MIEJSC Z
-																	// "#" W
-																	// KTORYCH
-																	// CHAIN SIE
-																	// UDUSIL
+			// MIEJSC Z
+			// "#" W
+			// KTORYCH
+			// CHAIN SIE
+			// UDUSIL
 		}
 		list.remove(map.get(index));
 		System.out.println("BLACK = " + allBlackLists);
@@ -374,7 +336,6 @@ public class Move implements Functions {
 		return result;
 	}
 
-	@Override
 	public boolean ko(int row, int column, Integer player) {
 		boolean allow = false;
 		if (column > 0 && column < size - 1 && row > 0 && row < size - 1) {
@@ -410,19 +371,19 @@ public class Move implements Functions {
 	}
 
 	public void lookAround(int row, int column, Integer player, boolean markField) { // markField
-																						// -
-																						// POTRZEBNE
-																						// DO
-																						// SPRAWDZANIA
-																						// WOLNYCH
-																						// MIEJSC
-																						// WOKOL
-																						// CHAINA,
-																						// ZEBY
-																						// POMINAC
-																						// JUZ
-																						// SPRAWDZONE
-																						// POLE
+		// -
+		// POTRZEBNE
+		// DO
+		// SPRAWDZANIA
+		// WOLNYCH
+		// MIEJSC
+		// WOKOL
+		// CHAINA,
+		// ZEBY
+		// POMINAC
+		// JUZ
+		// SPRAWDZONE
+		// POLE
 		int i = 0;
 		if (column == 0) {
 			if (board[row][column + 1] == "+") {
@@ -540,17 +501,4 @@ public class Move implements Functions {
 			}
 		}
 	}
-	// }
-	// catch( ArrayIndexOutOfBoundsException e)
-	// {
-	// System.out.println("Wyj¹tek ArrayIndexOutOfBoundsException");
-	// }
 }
-
-/*
- * catch(
- * 
- * ArrayIndexOutOfBoundsException exception) {
- * 
- * System.out.println("poza"); }
- */

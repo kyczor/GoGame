@@ -20,33 +20,30 @@ import java.util.List;
  */
 public class GUI extends Application
 {
-	enum whoseField
-	{
-		empty, black, white
-	}
-	int size;
-	ArrayList<ArrayList<whoseField>> fields;
+	HBox root;
+
+	//int size;
+	Board board;
 
 	public EchoClient client;
 
 	public GUI()
 	{
-		client = new EchoClient();
-		//client.start();
-		size = 9;
-
-		fields = new ArrayList<ArrayList<whoseField>>();
-		for(int i=0; i<size; i++)
-		{
-			fields.add(new ArrayList<whoseField> ());
-			for(int j=0; j<size; j++)
-			{
-				fields.get(i).add(whoseField.empty);
-			}
-		}
+		client = new EchoClient("localhost", 9000, this);
+//		size = 9;
+//
+//		fields = new ArrayList<ArrayList<whoseField>>();
+//		for(int i=0; i<size; i++)
+//		{
+//			fields.add(new ArrayList<whoseField> ());
+//			for(int j=0; j<size; j++)
+//			{
+//				fields.get(i).add(whoseField.empty);
+//			}
+//		}
 	//TEST
-		fields.get(5).set(6, whoseField.white);
-		fields.get(2).set(3, whoseField.black);
+//		fields.get(5).set(6, whoseField.white);
+//		fields.get(2).set(3, whoseField.black);
 	}
 
 	public static void main(String[] args)
@@ -61,10 +58,9 @@ public class GUI extends Application
 		stage.setWidth(1000);
 		stage.setHeight(830);
 		stage.setResizable(false);
-		HBox root = new HBox();
+		root = new HBox();
 
-		setLeftPanel(root);
-		drawBoard(root);
+		setLeftPanel();
 
 
 		Scene scene = new Scene(root);
@@ -74,7 +70,7 @@ public class GUI extends Application
 
 	}
 
-	private void setLeftPanel(HBox root)
+	private void setLeftPanel()
 	{
 
 		VBox panel1 = new VBox();
@@ -107,11 +103,12 @@ public class GUI extends Application
 
 		root.getChildren().add(panel1);
 	}
-	private void drawBoard(HBox root)
+	public void drawBoard(Board fboard)
 	{
+		this.board = fboard;
 		Canvas canvas = new Canvas(800,800);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		drawShapes(gc); //this will draw my board
+		drawShapes(gc, board); //this will draw my board
 		root.getChildren().add(canvas);
 		canvas.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
@@ -121,8 +118,11 @@ public class GUI extends Application
 				double x = event.getSceneX();
 				double y = event.getSceneY();
 				int x1,y1;
+				int size = board.getSize();
 				x1 =  (int)((x-(400/(size+1)))/(800/(size+1)));
 				y1 =  (int)((y-(400/(size+1)))/(800/(size+1)));
+				Command command = new Command("MOVE",x1,y1);
+				client.SendCommand(command);
 		//		TODO: a function that sends x1,y1 as (x,y) coordinates to client (/server?)  -- > server         which handles the move     as a result we get a refreshed board (after the move)
 			//bool - is the move legal?
 				// yes - refresh your board and disable gui changes
@@ -131,8 +131,9 @@ public class GUI extends Application
 		});
 	}
 
-	private void drawShapes(GraphicsContext gc)
+	private void drawShapes(GraphicsContext gc, Board board)
 	{
+		int size = board.getSize();
 		gc.setFill(Color.rgb(130,140,255));
 		gc.fillRect(20,20,760,760);
 		for(int i=0; i<size; i++)
@@ -150,12 +151,12 @@ public class GUI extends Application
 		{
 			for(int k=0; k<size; k++)
 			{
-				if (fields.get(j).get(k) == whoseField.black)
+				if (board.getField(j,k) == whosefield.black)
 				{
 					gc.setFill(Color.rgb(0,0,0));
 					gc.fillOval( (800/(size+1))+ j*(800/(size+1))-r,(800/(size+1))+ k*(800/(size+1))-r, 2*r, 2*r);
 				}
-				else if (fields.get(j).get(k) == whoseField.white)
+				else if (board.getField(j,k) == whosefield.white)
 				{
 					gc.setFill(Color.rgb(255,255,255));
 					gc.fillOval( (800/(size+1))+ j*(800/(size+1))- r,(800/(size+1))+ k*(800/(size+1))-r, 2*r, 2*r);

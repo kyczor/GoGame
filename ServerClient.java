@@ -10,6 +10,7 @@ import java.net.Socket;
  */
 public class ServerClient 
 {
+	public whosefield color;
 	private Socket s = null;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
@@ -23,8 +24,8 @@ public class ServerClient
 	{
 		s = socket;
 		oos = new ObjectOutputStream(s.getOutputStream());
-		oos.flush();
 		ois = new ObjectInputStream(s.getInputStream());
+		oos.writeObject(1);
 	}
 
 	/**
@@ -32,10 +33,10 @@ public class ServerClient
 	 * @param o object to be written as an object output stream
 	 * @throws IOException IOException handled by Exception class
 	 */
-	public void Write(Object o) throws IOException
+	public void Write(Command o) throws IOException
 	{
-		oos.writeObject(o);
 		oos.flush();
+		oos.writeObject(o);
 	}
 	
 	/**
@@ -46,8 +47,8 @@ public class ServerClient
 	public void WriteAsBoard(Board b) throws IOException
 	{
 		//b.writeObject(oos);
-		b.writeToStream(oos);
 		oos.flush();
+		oos.writeObject(b);
 	}
 	/**
 	 * 
@@ -55,9 +56,9 @@ public class ServerClient
 	 * @throws ClassNotFoundException exception with no detail message
 	 * @throws IOException IOException handled by Exception class
 	 */
-	public Object Read() throws ClassNotFoundException, IOException
+	public Command Read() throws ClassNotFoundException, IOException
 	{
-		return ois.readObject();
+		return (Command) ois.readObject();
 	}
 	
 	/**
