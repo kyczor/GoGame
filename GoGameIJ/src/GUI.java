@@ -5,15 +5,20 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static java.awt.SystemColor.text;
 
 /**
  * Created by Karola on 2016-12-20.
@@ -21,8 +26,10 @@ import java.util.List;
 public class GUI extends Application
 {
 	HBox root;
+	Dialog<Pair<Integer, Boolean>> dialogwin;
 
-	//int size;
+	int mysize;
+	boolean opptype;
 	Board board;
 	Canvas canvas;
 
@@ -55,6 +62,7 @@ public class GUI extends Application
 	@Override
 	public void start(Stage stage) throws Exception
 	{
+
 		stage.setTitle("GoGame");
 		stage.setWidth(1000);
 		stage.setHeight(830);
@@ -69,7 +77,17 @@ public class GUI extends Application
 		scene.getStylesheets().add("mystyles.css");
 		stage.setScene(scene);
 		stage.show();
+		setDialog();
 
+		Optional<Pair<Integer, Boolean>> choice = dialogwin.showAndWait();
+		choice.ifPresent(result1 ->
+		{
+			mysize = result1.getKey();
+			opptype = result1.getValue();
+		}
+		);
+
+		//1 element: getkey , 2 element: getvalue
 	}
 
 	private void setLeftPanel()
@@ -104,7 +122,59 @@ public class GUI extends Application
 		VBox.setMargin(pass, new Insets(50,0,0,0));
 
 		root.getChildren().add(panel1);
+
+
 	}
+
+	public void setDialog()
+	{
+		dialogwin = new Dialog<>();
+		dialogwin.setTitle("Configurations");
+		dialogwin.setHeaderText("Choose your preferences:");
+
+		ButtonType ok = new ButtonType("CONFIRM", ButtonBar.ButtonData.OK_DONE);
+		dialogwin.getDialogPane().getButtonTypes().add(ok);
+
+		GridPane mygrid = new GridPane();
+		Label boardsize = new Label("Board size:");
+		mygrid.add(boardsize, 0,0);
+		Label opptype = new Label("Opponent type:");
+		mygrid.add(opptype, 0, 1);
+		ComboBox<String> boardsizechoice = new ComboBox<>();
+		boardsizechoice.getItems().add("9 x 9");
+		boardsizechoice.getItems().add("13 x 13");
+		boardsizechoice.getItems().add("19 x 19");
+		boardsizechoice.getSelectionModel().select(0);
+		boardsizechoice.setPrefWidth(100);
+		mygrid.add(boardsizechoice, 1,0);
+		ComboBox<String> opptypechoice = new ComboBox<>();
+		opptypechoice.getItems().add("human");
+		opptypechoice.getItems().add("bot");
+		opptypechoice.getSelectionModel().select(0);
+		opptypechoice.setPrefWidth(100);
+		mygrid.add(opptypechoice, 1,1);
+		dialogwin.getDialogPane().setContent(mygrid);
+
+	//the following fragment of code returns chosen size of board and type of opponent (false-bot, true-human)
+		dialogwin.setResultConverter( e ->
+		{
+			int chosensize = 1;
+			Boolean humanornot = false;
+			if(boardsizechoice.getSelectionModel().getSelectedIndex() == 0)
+				chosensize = 9;
+			else if(boardsizechoice.getSelectionModel().getSelectedIndex() == 1)
+				chosensize = 13;
+			else chosensize = 19;
+
+			if(opptypechoice.getSelectionModel().getSelectedIndex() == 0)
+				humanornot = true;
+			else humanornot = false;
+
+			return new Pair<>(chosensize, humanornot);
+		}
+		);
+	}
+
 	public void drawBoard(Board fboard)
 	{
 		this.board = fboard;
@@ -133,7 +203,7 @@ public class GUI extends Application
 
 	private void drawShapes(GraphicsContext gc, Board board)
 	{
-		int size = board.getSize();
+		double size = board.getSize();
 		gc.clearRect(0,0,800,800);
 		gc.setFill(Color.rgb(130,140,255));
 		gc.fillRect(20,20,760,760);

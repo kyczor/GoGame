@@ -68,7 +68,7 @@ public class EchoServer
 		/*try
 		{*/
 		int x = -1, y = -1;
-		Board board = new Board(7);
+		Board board = new Board(90);
 		System.out.println("Server started");
 
 		try
