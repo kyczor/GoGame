@@ -36,6 +36,20 @@ public class Board implements Serializable
 		}
 	}
 
+	public Board(whosefield[][] arr)
+	{
+		this.i = arr.length;
+		tab = new ArrayList<>();
+		for (int i = 0; i < arr.length; i++)
+		{
+			tab.add(new ArrayList<>());
+			for (int j = 0; j < arr[i].length; j++)
+			{
+				tab.get(i).add(arr[i][j]);// 0 = empty field
+			}
+		}
+	}
+
 	public int getSize()
 	{
 		return i;
@@ -85,4 +99,18 @@ public class Board implements Serializable
 		}
 
 	}
+
+	public whosefield[][] toArray()
+	{
+		whosefield[][] r = new whosefield[i][i];
+		for (int a = 0; a < i; a++)
+		{
+			for (int b = 0; b < i; b++)
+			{
+				r[a][b] = getField(a,b);
+			}
+		}
+		return r;
+	}
+
 }
