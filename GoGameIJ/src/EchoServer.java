@@ -40,8 +40,6 @@ public class EchoServer
 	 */
 	void SendBoardToClient(Board b, ServerClient c) throws IOException
 	{
-		//c.Write(b.AsString()); // as string
-		//c.Write(b); // as object Board <--- moze juz dziala
 		c.WriteAsBoard(b);
 	}
 
@@ -72,7 +70,6 @@ public class EchoServer
 			System.out.println("Two Clients connected");
 
 
-
 			Thread.sleep(2000);
 			client1.color = whosefield.black;
 			client2.color = whosefield.white;
@@ -91,6 +88,22 @@ public class EchoServer
 						actualPlayer.Write(new Command(actualPlayer.color == whosefield.white ? "W" : "B",board));
 						break;
 					}
+					else if (c.type.equals("PASS"))
+					{
+						break;  //doesn't have to do anything
+					}
+					else if (c.type.equals("ENDGAME"))
+					{
+						Command closeit = new Command("ENDGAME", board);
+						client1.Write(closeit);
+						client2.Write(closeit);
+						break;
+					}
+					else if (c.type.equals("GIVEUP"))
+					{
+						//TODO: the other player wins
+						break;
+					}
 
 				}
 
@@ -105,56 +118,6 @@ public class EchoServer
 		}
 		System.out.println("Server stoped");
 
-			/*while (true)
-			{				
-				Socket client = server.accept();
-				BufferedReader r = new BufferedReader(new InputStreamReader(client.getInputStream()));
-				PrintWriter w = new PrintWriter(client.getOutputStream(), true);
-				//ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
-				//ObjectOutputStream ous = new ObjectOutputStream(client.getOutputStream());
-
-				w.println("Welcome to the Java GoServer.  Type 'bye' to close.  Select table size ( 3/9/19/29 )");
-				String line;
-				do{
-					line = r.readLine();
-					System.out.println(line);
-				}while(!line.equals("bye"));
-				line = r.readLine();
-				if(line.trim().equals("3") || line.trim().equals("9") || line.trim().equals("19") || line.trim().equals("29"))
-				{
-					i = Integer.parseInt(line);
-					ourTab = board.InitTable(i); //should create a 2-dimensional table filled with 0's  (size: i)
-
-				}
-				else
-				{
-					System.out.println("client close");
-					client.close();
-				}
-				
-				do
-				{
-					//ous.println(ourTab);
-					for(int[] et: ourTab)
-						for(int e:et)
-							w.print(e);
-					if ( line != null )
-						w.println("Got: "+ line);
-					line = r.readLine();
-					if(line == "")
-					{
-						
-					}
-					
-				}
-				while ( !line.trim().equals("bye") );
-				client.close();
-			}
-		}
-		catch (Exception err)
-		{
-			System.err.println(err);
-		}*/
 	}
 
 	/**
