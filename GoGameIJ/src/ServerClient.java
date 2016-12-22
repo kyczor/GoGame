@@ -38,7 +38,20 @@ public class ServerClient
 		oos.flush();
 		oos.writeObject(o);
 	}
-	
+
+	public void flush()
+	{
+		try
+		{
+			oos.flush();
+		}
+		catch (Exception e)
+		{
+
+		}
+	}
+
+
 	/**
 	 * 
 	 * @param b

@@ -71,24 +71,20 @@ public class EchoClient implements Runnable
 	{
 		try
 		{
-			if (command.type == "MOVE" && movemaking)
+			oos.writeObject(command);
+			if (command.type == "MOVE")
 			{
-				oos.writeObject(command);
 				movemaking = false;
-			} else if (command.type == "GIVEUP" && movemaking)
+			} else if (command.type == "GIVEUP")
 			{
-				oos.writeObject(command);
 				movemaking = false; // a client can no longer make moves
-			} else if (command.type == "PASS" && movemaking)
+			} else if (command.type == "PASS")
 			{
-				oos.writeObject(command);
 				movemaking = false;
 			} else if (command.type == "COUNTP")
 			{
-				oos.writeObject(command);
 			} else if (command.type == "ENDGAME")
 			{
-				oos.writeObject(command);
 				movemaking = false;
 			}
 		} catch (Exception e)

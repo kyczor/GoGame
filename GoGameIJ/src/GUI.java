@@ -37,7 +37,7 @@ public class GUI extends Application
 //uczymy sie gita
 	public GUI()
 	{
-		client = new EchoClient("localhost", 9000, this);
+		//client = new EchoClient("localhost", 9000, this);
 //		size = 9;
 //
 //		fields = new ArrayList<ArrayList<whoseField>>();
@@ -170,6 +170,8 @@ public class GUI extends Application
 				humanornot = true;
 			else humanornot = false;
 
+			client = new EchoClient("localhost", 9000, this);
+			client.SendCommand(new Command((humanornot ? "HUMAN_SIZE" : "BOT_SIZE"), new Board(chosensize)));
 			return new Pair<>(chosensize, humanornot);
 		}
 		);

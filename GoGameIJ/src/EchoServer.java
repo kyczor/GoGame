@@ -48,42 +48,34 @@ public class EchoServer
 	/**
 	 * Creates new Board object that is (for the time being (testing)) a 3x3 table filled with 0's.
 	 * Starts the game and sets a first player. Sends appropriate messages. Changes "active player" after every move.
-	 * Handles every move (TODO Game Rules).
+	 * Handles every move
 	 */
 	public void serve()
 	{
-//		while (true)
-//		{
-//			try {
-//				Socket s = server.accept();
-//				ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
-//				ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
-//				objectOutputStream.writeObject(1);
-//			}
-//			catch (Exception e)
-//			{
-//				e.printStackTrace();
-//			}
-//		}
-		/*try
-		{*/
 		int x = -1, y = -1;
-		Board board = new Board(90);
 		System.out.println("Server started");
-
+		Board board = new Board(5);
 		try
 		{
 			if (client1 == null)
 				client1 = new ServerClient(server.accept());
+			Command command = client1.Read();
+			if(command.type.equals("HUMAN_SIZE"))
+			{
+				board = command.board;
+				client1.Write(new Command("B", board));  // sends an empty board to both players
+			}
 			if (client2 == null)
 				client2 = new ServerClient(server.accept());
+			client2.Read();
 			//connects two clients
 			System.out.println("Two Clients connected");
+
+
 
 			Thread.sleep(2000);
 			client1.color = whosefield.black;
 			client2.color = whosefield.white;
-			client1.Write(new Command("B", board));  // sends an empty board to both players
 			client2.Write(new Command("W", board));
 
 			ServerClient actualPlayer = client1;
