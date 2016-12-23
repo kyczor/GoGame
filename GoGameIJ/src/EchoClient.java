@@ -29,6 +29,7 @@ public class CLIENTTT
 */
 
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.io.*;
 import java.net.*;
@@ -42,6 +43,7 @@ import java.net.*;
  */
 public class EchoClient implements Runnable
 {
+	Socket s;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	private volatile boolean end;
@@ -51,10 +53,11 @@ public class EchoClient implements Runnable
 	public EchoClient(String host, int port, GUI gui)
 	{
 		this.gui = gui;
-		Socket s;
+
 		try
 		{
 			s = new Socket(host, port);
+			s.setSoTimeout(100);
 			System.out.println("Socket created");
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
@@ -71,21 +74,37 @@ public class EchoClient implements Runnable
 	{
 		try
 		{
-			oos.writeObject(command);
-			if (command.type == "MOVE")
+			if (command.type.equals("HUMAN_SIZE") || command.type.equals("BOT_SIZE"))
+			{
+				oos.writeObject(command);
+			} else if (movemaking)
 			{
 				movemaking = false;
-			} else if (command.type == "GIVEUP")
+				oos.writeObject(command);
+			}
+			if (command.type.equals("ENDGAME"))
 			{
-				movemaking = false; // a client can no longer make moves
-			} else if (command.type == "PASS")
+
+				Platform.runLater(() -> {
+					Alert alert = new Alert(Alert.AlertType.INFORMATION);
+					alert.setTitle("Info");
+					alert.setHeaderText("The game has ended");
+					alert.setContentText("You have been disconnected.");
+					alert.showAndWait();
+				});
+				end = true;
+
+			}
+			if (command.type.equals("GIVEUP"))
 			{
-				movemaking = false;
-			} else if (command.type == "COUNTP")
-			{
-			} else if (command.type == "ENDGAME")
-			{
-				movemaking = false;
+				Platform.runLater(() -> {
+					Alert alert = new Alert(Alert.AlertType.INFORMATION);
+					alert.setTitle("You gave up");
+					alert.setHeaderText("The game has ended.\nYou LOST.");
+					alert.setContentText("You have been disconnected.");
+					alert.showAndWait();
+				});
+				end = true;
 			}
 		} catch (Exception e)
 		{
@@ -133,84 +152,43 @@ public class EchoClient implements Runnable
 							gui.drawBoard(c.board);
 						});
 						break;
+					case "ENDGAME":
+						movemaking = false;
+						Platform.runLater(() -> {
+							Alert alert = new Alert(Alert.AlertType.INFORMATION);
+							alert.setTitle("Info");
+							alert.setHeaderText("The game has ended");
+							alert.setContentText("You have been disconnected.");
+							alert.showAndWait();
+						});
+						end = true;
+						break;
+					case "GIVEUP":
+						movemaking = false;
+						Platform.runLater(() -> {
+							Alert alert = new Alert(Alert.AlertType.INFORMATION);
+							alert.setTitle("Your opponent gave up");
+							alert.setHeaderText("The game has ended. You WON!!!!");
+							alert.setContentText("You have been disconnected.");
+							alert.showAndWait();
+						});
+						end = true;
+						break;
+
 					default:
 						break;
 				}
 			} catch (Exception e)
 			{
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
-
-
-//		super.start();
-//
-//		Socket s = null;
-//		try
-//		{
-//			s = new Socket("127.0.0.1", 9995);
-//			System.out.println("Socket created");
-//			BufferedReader r = new BufferedReader(new InputStreamReader(s.getInputStream()));
-//			PrintWriter w = new PrintWriter(s.getOutputStream(), true);
-//			oos = new ObjectOutputStream(s.getOutputStream());
-//			oos.flush();
-//			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-//			console = new BufferedReader(new InputStreamReader(System.in));
-//
-//
-//			Object obj = ois.readObject();
-//			if(obj instanceof String)
-//			{
-//				String msg = (String)obj;
-//				System.out.println(msg);
-//			}
-//
-//			end = false;
-//
-//			do
-//			{
-//				obj = ois.readObject();
-//				if(obj instanceof String)
-//				{
-//					String msg = (String)obj;
-//					if(msg.equals("Board"))
-//					{
-//						Board board = new Board();
-//					board.readFromStream(ois);
-//						board.Print();
-//						SendAnswer(console.readLine());
-//					}
-//					else if(msg.equals("bye"))
-//					{
-//						System.out.println("Your opponent has left.");
-//						end = true;
-//					}
-//					else if(msg.equals("size"))
-//					{
-//						System.out.println("3/9/19/29");
-//						String ret = console.readLine();
-//						Integer size = Integer.parseInt(ret);
-//						//TODO: validate input and try/catch parseInt
-//						SendAnswer(size.toString());
-//					}
-//					else
-//					{
-//						System.out.println(msg);
-//						SendAnswer(console.readLine());
-//					}
-//				}
-//				else if (obj instanceof NewMove)
-//				{
-//
-//				}
-//			}
-//			while (!end);
-//
-//			s.close();
-//		}
-//		catch (Exception err)
-//		{
-//			System.err.println(err);
-//		}
+		try
+		{
+			s.close();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

@@ -34,7 +34,7 @@ public class GUI extends Application
 	Canvas canvas;
 
 	public EchoClient client;
-//uczymy sie gita
+
 	public GUI()
 	{
 		//client = new EchoClient("localhost", 9000, this);
@@ -104,22 +104,61 @@ public class GUI extends Application
 		giveUp.setPrefWidth(100);
 		panel1.getChildren().add(giveUp);
 		VBox.setMargin(giveUp, new Insets(150,0,0,0));
+		giveUp.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				Command command = new Command("GIVEUP", board);
+				client.SendCommand(command);
+			}
+		});
 
 
 		Button endgame = new Button("End game");
 		endgame.setPrefWidth(100);
 		panel1.getChildren().add(endgame);
 		VBox.setMargin(endgame, new Insets(50,0,0,0));
+		endgame.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				Command command = new Command("ENDGAME", board);
+				client.SendCommand(command);
+			}
+		});
 
 		Button countPoints = new Button("Count points");
 		countPoints.setPrefWidth(100);
 		panel1.getChildren().add(countPoints);
 		VBox.setMargin(countPoints, new Insets(50,0,0,0));
+		countPoints.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("It's not that easy");
+				alert.setHeaderText("This feature is not available... yet");
+				alert.setContentText("You have to do it YOURSELF.");
+				alert.showAndWait();
+			}
+		});
 
 		Button pass = new Button("Pass");
 		pass.setPrefWidth(100);
 		panel1.getChildren().add(pass);
 		VBox.setMargin(pass, new Insets(50,0,0,0));
+		pass.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				Command command = new Command("PASS", board);
+				client.SendCommand(command);
+			}
+		});
 
 		root.getChildren().add(panel1);
 
