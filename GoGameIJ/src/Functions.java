@@ -5,7 +5,7 @@ import java.util.Map;
 public interface Functions {
 	// void getTab();
 
-	void game() throws ArrayException;
+	boolean game() throws ArrayException;
 
 	void move(int row, int column, Integer player);
 
