@@ -103,7 +103,9 @@ public class EchoServer {
 					}
 					else if (c.type.equals("GIVEUP"))
 					{
-						//TODO: the other player wins
+						Command lethimknow = new Command("GIVEUP", board);
+						client1.Write(lethimknow);
+						client2.Write(lethimknow);
 						break;
 					}
 

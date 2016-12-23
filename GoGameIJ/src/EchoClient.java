@@ -57,6 +57,7 @@ public class EchoClient implements Runnable
 		try
 		{
 			s = new Socket(host, port);
+			s.setSoTimeout(100);
 			System.out.println("Socket created");
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
@@ -76,23 +77,34 @@ public class EchoClient implements Runnable
 			if (command.type.equals("HUMAN_SIZE") || command.type.equals("BOT_SIZE"))
 			{
 				oos.writeObject(command);
-			}
-			else if (movemaking)
+			} else if (movemaking)
 			{
 				movemaking = false;
 				oos.writeObject(command);
 			}
 			if (command.type.equals("ENDGAME"))
 			{
-				s.close();
+
 				Platform.runLater(() -> {
 					Alert alert = new Alert(Alert.AlertType.INFORMATION);
-					alert.setTitle("Information Dialog");
-					alert.setHeaderText("Look, an Information Dialog");
-					alert.setContentText("I have a great message for you!");
-
+					alert.setTitle("Info");
+					alert.setHeaderText("The game has ended");
+					alert.setContentText("You have been disconnected.");
 					alert.showAndWait();
 				});
+				end = true;
+
+			}
+			if (command.type.equals("GIVEUP"))
+			{
+				Platform.runLater(() -> {
+					Alert alert = new Alert(Alert.AlertType.INFORMATION);
+					alert.setTitle("You gave up");
+					alert.setHeaderText("The game has ended.\nYou LOST.");
+					alert.setContentText("You have been disconnected.");
+					alert.showAndWait();
+				});
+				end = true;
 			}
 		} catch (Exception e)
 		{
@@ -113,7 +125,7 @@ public class EchoClient implements Runnable
 		{
 			try
 			{
-			//	Thread.sleep(1000);
+				Thread.sleep(1000);
 			} catch (Exception e)
 			{
 				e.printStackTrace();
@@ -140,13 +152,42 @@ public class EchoClient implements Runnable
 							gui.drawBoard(c.board);
 						});
 						break;
+					case "ENDGAME":
+
+						Platform.runLater(() -> {
+							Alert alert = new Alert(Alert.AlertType.INFORMATION);
+							alert.setTitle("Info");
+							alert.setHeaderText("The game has ended");
+							alert.setContentText("You have been disconnected.");
+							alert.showAndWait();
+						});
+						end = true;
+						break;
+					case "GIVEUP":
+						Platform.runLater(() -> {
+							Alert alert = new Alert(Alert.AlertType.INFORMATION);
+							alert.setTitle("Your opponent gave up");
+							alert.setHeaderText("The game has ended. You WON!!!!");
+							alert.setContentText("You have been disconnected.");
+							alert.showAndWait();
+						});
+						end = true;
+						break;
+
 					default:
 						break;
 				}
 			} catch (Exception e)
 			{
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
+		}
+		try
+		{
+			s.close();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 }

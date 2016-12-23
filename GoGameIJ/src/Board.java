@@ -100,17 +100,18 @@ public class Board implements Serializable
 
 	}
 
-	public whosefield[][] toArray()
-	{
-		whosefield[][] r = new whosefield[i][i];
-		for (int a = 0; a < i; a++)
-		{
-			for (int b = 0; b < i; b++)
-			{
-				r[a][b] = getField(a,b);
-			}
-		}
-		return r;
-	}
+
+//	public whosefield[][] toArray()
+//	{
+//		whosefield[][] r = new whosefield[i][i];
+//		for (int a = 0; a < i; a++)
+//		{
+//			for (int b = 0; b < i; b++)
+//			{
+//				r[a][b] = getField(a,b);
+//			}
+//		}
+//		return r;
+//	}
 
 }
