@@ -82,8 +82,9 @@ public class EchoServer {
 				while (true) {
 					actualPlayer.Write(new Command("MOVE", board));
 					Command c = actualPlayer.Read();
+					m1.getData(c.getX(), c.getY(), actualPlayer.color, board);
+					m1.game();
 					if (c.type.equals("MOVE") && board.putPawn(actualPlayer.color, c.getX(), c.getY())) {
-						m1.getData(c.getX(), c.getY(), actualPlayer.color, board);
 						actualPlayer.Write(new Command(actualPlayer.color == whosefield.white ? "W" : "B", board));
 
 						break;

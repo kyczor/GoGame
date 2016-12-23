@@ -5,14 +5,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 //try{
 
 public class Move implements Functions {
 
 	// ArrayException exception = new ArrayException();
-	public int size = 6;
+	public int size = 9;
 	private Object[][] board = new Object[size][size];
 	public List<List<Point>> allBlackLists = new ArrayList<>();
 	private List<List<Point>> allWhiteLists = new ArrayList<>();
@@ -24,10 +23,48 @@ public class Move implements Functions {
 	private int x, y;
 	whosefield color;
 	private Board boardPublic;
+	boolean isFieldCorrect = false;
 
 	public Move() {
 		for (Object[] row : board)
 			Arrays.fill(row, "+");
+	}
+
+	public void listToBoard() {
+		for (int x = 0; x < boardPublic.tab.size(); x++) {
+			for (int y = 0; y < boardPublic.tab.get(x).size(); y++) {
+				board[x][y] = boardPublic.tab.get(x).get(y);
+			}
+		}
+		for (int x = 0; x < board.length; x++) {
+			for (int y = 0; y < board[x].length; y++) {
+				if (board[x][y] == whosefield.empty)
+					board[x][y] = "+";
+				if (board[x][y] == whosefield.white)
+					board[x][y] = "1";
+				if (board[x][y] == whosefield.black)
+					board[x][y] = "0";
+			}
+		}
+		System.out.println("ehh");
+	}
+
+	public void boardToList() {
+		for (int x = 0; x < board.length; x++) {
+			for (int y = 0; y < board[x].length; y++) {
+				if (board[x][y] == "+")
+					board[x][y] = whosefield.empty;
+				if (board[x][y] == "1")
+					board[x][y] = whosefield.white;
+				if (board[x][y] == "0")
+					board[x][y] = whosefield.black;
+			}
+		}
+		if (isFieldCorrect == true) {
+			boardPublic.putPawn(color, x, y);
+		}
+		isFieldCorrect = false;
+		System.out.println("ehh");
 	}
 
 	public void getData(int x, int y, whosefield color, Board boardPublic) {
@@ -35,6 +72,7 @@ public class Move implements Functions {
 		this.x = x;
 		this.y = y;
 		this.color = color;
+		listToBoard();
 	}
 	// // testowe
 	// public void getTab() {
@@ -71,124 +109,134 @@ public class Move implements Functions {
 		boolean checkKo = false;
 		Integer blackPlayer = 1;
 		Integer whitePlayer = 0;
-		Scanner sc = new Scanner(System.in);
+		// Scanner sc = new Scanner(System.in);
 		String player = "BLACK";
-		System.out.println("When you will game with bot  press 1, when you will play with human press 2");
-		int input = sc.nextInt();
-		while (blackStones != 0 || whiteStones != 0) {
-			boolean failure = true;
-
-			if (i % 2 != 0) {
-				while (failure) {
-					// System.out.println("White stones = " + whiteStones +
-					// "
-					// Black stones = " + blackStones);
-					System.out.println("Player " + player);
-					System.out.println("Move nr " + i);
-					System.out.println("Give row: ");
-					// row = sc.nextInt();
-					if (row > size)
-						throw new ArrayException("Pawn outside board");
-					// throw new ArrayIndexOutOfBoundsException();
-					// exception.sendMessage();
-					System.out.println("Give column: ");
-					// column = sc.nextInt();
-					if (column > size)
-						throw new ArrayException(" Pawn outside board");
-					// throw new ArrayIndexOutOfBoundsException();
-					// exception.sendMessage();
-					empty = 0;
-					lookAround(row, column, null, false);
-					if (isEmpty(row, column)) {
-						if (empty > 0) {
-							move(row, column, blackPlayer);
-							checkBreath(row, column, whitePlayer);
-							player = "WHITE";
-							blackStones--;
-							failure = false;
-						} else {
-							if ((ko(row, column, blackPlayer)) && (checkKo == false)) {
-								// checkKo = true;
-								// System.out.println("W\n\n\n");
-								move(row, column, blackPlayer);
-								checkBreath(row, column, whitePlayer);
-								player = "WHITE";
-								blackStones--;
-								blackStones--;
-								failure = false;
-								checkKo = true;
-
-							} else {
-								// checkKo=false;
-								System.out.println("Illegal move");
-								failure = true;
-							}
-						}
-					} else {
-						System.out.println("Field is occupied.");
-					}
-				}
+		// System.out.println("When you will game with bot press 1, when you
+		// will play with human press 2");
+		// int input = sc.nextInt();
+		// while (blackStones != 0 || whiteStones != 0) {
+		boolean failure = true;
+		//
+		// if (i % 2 != 0) {
+		// while (failure) {
+		// System.out.println("White stones = " + whiteStones +
+		// "
+		// Black stones = " + blackStones);
+		// System.out.println("Player " + player);
+		// System.out.println("Move nr " + i);
+		// System.out.println("Give row: ");
+		// row = sc.nextInt();
+		if (row > size)
+			throw new ArrayException("Pawn outside board");
+		// throw new ArrayIndexOutOfBoundsException();
+		// exception.sendMessage();
+		// System.out.println("Give column: ");
+		// column = sc.nextInt();
+		if (column > size)
+			throw new ArrayException(" Pawn outside board");
+		// throw new ArrayIndexOutOfBoundsException();
+		// exception.sendMessage();
+		empty = 0;
+		lookAround(row, column, null, false);
+		if (isEmpty(row, column)) {
+			if (empty > 0) {
+				move(row, column, blackPlayer);
+				checkBreath(row, column, whitePlayer);
+				System.out.println("WYKONALO");
+				player = "WHITE";
+				blackStones--;
+				failure = false;
 			} else {
-				while (failure) {
-					// System.out.println("White stones = " + whiteStones +
-					// "
-					// Black stones = " + blackStones);
+				if ((ko(row, column, blackPlayer)) && (checkKo == false)) {
+					// checkKo = true;
+					// System.out.println("W\n\n\n");
+					move(row, column, blackPlayer);
+					isFieldCorrect = true;
+					checkBreath(row, column, whitePlayer);
+					player = "WHITE";
+					blackStones--;
+					blackStones--;
+					failure = false;
+					checkKo = true;
 
-					// if (input == 1) {
-					// System.out.println("Bot " + player + ".");
-					// System.out.println("Move nr " + i + ".");
-					//
-					// Random rand1 = new Random();
-					// Random rand2 = new Random();
-					// row = rand1.nextInt(size) - 1;
-					//
-					// column = rand2.nextInt(size) - 1;
-					// System.out.println("field : " + row + " " + column);
-					// }
-
-					// else if (input == 2) {
-					// System.out.println("Player " + player + ".");
-					// System.out.println("Move nr " + i + ".");
-					// System.out.println("Give row: ");
-					// row = sc.nextInt();
-					// System.out.println("Give column: ");
-					// column = sc.nextInt();
-					// }
-
-					// else
-					// throw new ArrayException("You do not press 1 or 2.
-					// Fail");
-
-					empty = 0;
-					lookAround(row, column, null, false);
-					if (isEmpty(row, column)) {
-						if (empty > 0) {
-							move(row, column, whitePlayer);
-							checkBreath(row, column, blackPlayer);
-							player = "BLACK";
-							whiteStones--;
-							failure = false;
-						} else {
-							if ((ko(row, column, whitePlayer)) && (checkKo == false)) {
-								move(row, column, whitePlayer);
-								checkBreath(row, column, blackPlayer);
-								player = "BLACK";
-								blackStones--;
-								failure = false;
-								checkKo = true;
-							} else {
-								System.out.println("Illegal move");
-								failure = true;
-							}
-						}
-					} else {
-						System.out.println("Field is occupied.");
-					}
+				} else {
+					// checkKo=false;
+					// System.out.println("Illegal move");
+					throw new ArrayException(" Illegal move");
+					// failure = true;
 				}
 			}
-			i++;
-			// getTab();
+		} else {
+			// System.out.println("Field is occupied.");
+			throw new ArrayException("Field is occupied.");
 		}
+		// }
+		// } else {
+		// while (failure) {
+		// // System.out.println("White stones = " + whiteStones +
+		// // "
+		// // Black stones = " + blackStones);
+		//
+		// // if (input == 1) {
+		// // System.out.println("Bot " + player + ".");
+		// // System.out.println("Move nr " + i + ".");
+		// //
+		// // Random rand1 = new Random();
+		// // Random rand2 = new Random();
+		// // row = rand1.nextInt(size) - 1;
+		// //
+		// // column = rand2.nextInt(size) - 1;
+		// // System.out.println("field : " + row + " " + column);
+		// // }
+		//
+		// // else if (input == 2) {
+		// // System.out.println("Player " + player + ".");
+		// // System.out.println("Move nr " + i + ".");
+		// // System.out.println("Give row: ");
+		// // row = sc.nextInt();
+		// // System.out.println("Give column: ");
+		// // column = sc.nextInt();
+		// // }
+		//
+		// // else
+		// // throw new ArrayException("You do not press 1 or 2.
+		// // Fail");
+		//
+		// empty = 0;
+		// lookAround(row, column, null, false);
+		// if (isEmpty(row, column)) {
+		// if (empty > 0) {
+		// move(row, column, whitePlayer);
+		// isFieldCorrect = true;
+		// checkBreath(row, column, blackPlayer);
+		// player = "BLACK";
+		// whiteStones--;
+		// failure = false;
+		// } else {
+		// if ((ko(row, column, whitePlayer)) && (checkKo == false)) {
+		// move(row, column, whitePlayer);
+		// isFieldCorrect = true;
+		// checkBreath(row, column, blackPlayer);
+		// player = "BLACK";
+		// blackStones--;
+		// failure = false;
+		// checkKo = true;
+		// } else {
+		// // System.out.println("Illegal move");
+		// throw new ArrayException("Illegal move");
+		// // failure = true;
+		// }
+		// }
+		// } else {
+		// // System.out.println("Field is occupied.");
+		// throw new ArrayException("Field is occupied.");
+		// }
+		// }
+		// }
+		// i++;
+		// getTab();
+		// }
+		boardToList();
 	}
 
 	public void move(int row, int column, Integer player) {
@@ -217,7 +265,8 @@ public class Move implements Functions {
 		List<Point> insideList = new LinkedList<>();
 		insideList.add(new Point(row, column));
 		outsideList.add(insideList);
-		System.out.println("New " + color + " chain = " + insideList);
+		// System.out.println("New " + color + " chain = " + insideList);
+
 	}
 
 	public void connectChains(int row, int column, Integer player) {
@@ -242,7 +291,8 @@ public class Move implements Functions {
 			for (int i = 0; i < aFriendsList.size(); i++) {
 				if (aFriendsList.get(i).getX() == friend[0].getX() && aFriendsList.get(i).getY() == friend[0].getY()) {
 					aFriendsList.add(new Point(row, column));
-					System.out.println("Add a point x=" + row + " y=" + column + " to " + aFriendsList);
+					// System.out.println("Add a point x=" + row + " y=" +
+					// column + " to " + aFriendsList);
 				}
 			}
 		}
@@ -282,14 +332,14 @@ public class Move implements Functions {
 			}
 		}
 		friendsList.remove(listToRemove);
-		System.out.println("masterList" + player + " = " + masterList);
+		// System.out.println("masterList" + player + " = " + masterList);
 	}
 
 	public void checkBreath(int row, int column, Integer player) {
 		friends = 0;
 		friendsLocation = new Point[4];
 		lookAround(row, column, player, false);
-		System.out.println("the number of enemies = " + friends);
+		// System.out.println("the number of enemies = " + friends);
 		if (friends > 0) {
 			List<List<Point>> friendsList;
 			Map<Integer, List<Point>> toRemoveMap = new HashMap<>();
@@ -345,7 +395,8 @@ public class Move implements Functions {
 						}
 					}
 				}
-				System.out.println(j + " The sum of breaths = " + sumEmpty[j]);
+				// System.out.println(j + " The sum of breaths = " +
+				// sumEmpty[j]);
 				if (sumEmpty[j] == 0) { // JESLI SUMA PUSTYCH MIEJSC DO OKOLA
 										// CHAINA O INDEKSIE "j" JEST = 0
 					removeList(j, toRemoveMap, friendsList);
@@ -355,8 +406,8 @@ public class Move implements Functions {
 	}
 
 	public void removeList(int index, Map<Integer, List<Point>> map, List<List<Point>> list) {
-		System.out.println("BLACK = " + allBlackLists);
-		System.out.println("WHITE = " + allWhiteLists);
+		// System.out.println("BLACK = " + allBlackLists);
+		// System.out.println("WHITE = " + allWhiteLists);
 		for (Point point : map.get(index)) { // DLA KAZDEGO ELEMENTU
 												// ZAPAMIETANEJ LISTY O INDEKSIE
 												// "j"
@@ -368,9 +419,9 @@ public class Move implements Functions {
 																	// UDUSIL
 		}
 		list.remove(map.get(index));
-		System.out.println("BLACK = " + allBlackLists);
-		System.out.println("WHITE = " + allWhiteLists);
-		System.out.println("Delet chain index = " + index);
+		// System.out.println("BLACK = " + allBlackLists);
+		// System.out.println("WHITE = " + allWhiteLists);
+		// System.out.println("Delet chain index = " + index);
 	}
 
 	public void cleanEmpty() {
