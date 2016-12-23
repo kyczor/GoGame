@@ -68,27 +68,29 @@ public class Move implements Functions {
 	 */
 
 	public void removePlayer(int x, int y, whosefield enemy, whosefield friend) {
-		cornerCase(x, y, enemy, friend);
-
-		if (board.getField(x, y + 1) == enemy) {
-			if (board.getField(x, y) == friend && board.getField(x, y + 2) == friend
-					&& board.getField(x - 1, y + 1) == friend && board.getField(x + 1, y + 1) == friend)
-				board.tab.get(x).set(y + 1, color.empty);
-		}
-		if (board.getField(x, y - 1) == enemy) {
-			if (board.getField(x, y) == friend && board.getField(x, y - 2) == friend
-					&& board.getField(x - 1, y - 1) == friend && board.getField(x + 1, y - 1) == friend)
-				board.tab.get(x).set(y - 1, color.empty);
-		}
-		if (board.getField(x + 1, y) == enemy) {
-			if (board.getField(x, y) == friend && board.getField(x + 2, y) == friend
-					&& board.getField(x + 1, y - 1) == friend && board.getField(x + 1, y + 1) == friend)
-				board.tab.get(x + 1).set(y, color.empty);
-		}
-		if (board.getField(x - 1, y) == enemy) {
-			if (board.getField(x, y) == friend && board.getField(x - 2, y) == friend
-					&& board.getField(x - 1, y - 1) == friend && board.getField(x - 1, y + 1) == friend)
-				board.tab.get(x - 1).set(y, color.empty);
+		if (x == 0 || y == 0) {
+			cornerCase(x, y, enemy, friend);
+		} else {
+			if (board.getField(x, y + 1) == enemy) {
+				if (board.getField(x, y) == friend && board.getField(x, y + 2) == friend
+						&& board.getField(x - 1, y + 1) == friend && board.getField(x + 1, y + 1) == friend)
+					board.tab.get(x).set(y + 1, color.empty);
+			}
+			if (board.getField(x, y - 1) == enemy) {
+				if (board.getField(x, y) == friend && board.getField(x, y - 2) == friend
+						&& board.getField(x - 1, y - 1) == friend && board.getField(x + 1, y - 1) == friend)
+					board.tab.get(x).set(y - 1, color.empty);
+			}
+			if (board.getField(x + 1, y) == enemy) {
+				if (board.getField(x, y) == friend && board.getField(x + 2, y) == friend
+						&& board.getField(x + 1, y - 1) == friend && board.getField(x + 1, y + 1) == friend)
+					board.tab.get(x + 1).set(y, color.empty);
+			}
+			if (board.getField(x - 1, y) == enemy) {
+				if (board.getField(x, y) == friend && board.getField(x - 2, y) == friend
+						&& board.getField(x - 1, y - 1) == friend && board.getField(x - 1, y + 1) == friend)
+					board.tab.get(x - 1).set(y, color.empty);
+			}
 		}
 	}
 
