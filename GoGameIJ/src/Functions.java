@@ -1,32 +1,12 @@
-import java.awt.Point;
-import java.util.List;
-import java.util.Map;
-
 public interface Functions {
-	// void getTab();
+	void getData(int x, int y, whosefield color, Board board);
 
-	boolean game() throws ArrayException;
+	boolean game();
 
-	void move(int row, int column, Integer player);
+	Board getBoard();
 
-	void newChain(int row, int column, Integer player);
+	void removePlayer(int x, int y, whosefield enemy, whosefield friend);
 
-	void connectChains(int row, int column, Integer player);
-
-	void oneFriendChain(int row, int column, Integer player, Point[] friend);
-
-	void manyFriendsChain(int row, int column, Integer player, Point[] friend);
-
-	void checkBreath(int row, int column, Integer player);
-
-	void removeList(int index, Map<Integer, List<Point>> map, List<List<Point>> list);
-
-	void cleanEmpty();
-
-	boolean isEmpty(int row, int column);
-
-	boolean ko(int row, int column, Integer player);
-
-	void lookAround(int row, int column, Integer player, boolean markField);
+	void cornerCase(int x, int y, whosefield enemy, whosefield friend);
 
 }

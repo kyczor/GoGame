@@ -1,12 +1,10 @@
 //try{
 
-public class Move /* implements Functions */ {
+public class Move implements Functions {
 
-	public int size = 9;
 	private int x, y;
 	whosefield color;
 	private Board board;
-	boolean isFieldCorrect = false;
 
 	/**
 	 * A function that reads all the needed data
@@ -21,7 +19,6 @@ public class Move /* implements Functions */ {
 	 *            actual board
 	 */
 
-	// laduje dane
 	public void getData(int x, int y, whosefield color, Board board) {
 		this.board = board;
 		this.x = x;
@@ -35,8 +32,7 @@ public class Move /* implements Functions */ {
 	 * @throws ArrayException
 	 */
 
-	// rozpoczyna sprawdzanie warunkow
-	public boolean game() throws ArrayException {
+	public boolean game() {
 		whosefield playerColor = color;
 		int col = x;
 		int row = y;
@@ -54,7 +50,6 @@ public class Move /* implements Functions */ {
 	 * @return board
 	 */
 
-	// zwraca tablice
 	public Board getBoard() {
 		return board;
 	}
@@ -72,33 +67,33 @@ public class Move /* implements Functions */ {
 	 *            current player's colour
 	 */
 
-	// sprawdza warunki okrazenia gracza
 	public void removePlayer(int x, int y, whosefield enemy, whosefield friend) {
-		cornerCase(x, y, enemy, friend);
-
-		if (board.getField(x, y + 1) == enemy) {
-			if (board.getField(x, y) == friend && board.getField(x, y + 2) == friend
-					&& board.getField(x - 1, y + 1) == friend && board.getField(x + 1, y + 1) == friend)
-				board.tab.get(x).set(y + 1, color.empty);
-		}
-		if (board.getField(x, y - 1) == enemy) {
-			if (board.getField(x, y) == friend && board.getField(x, y - 2) == friend
-					&& board.getField(x - 1, y - 1) == friend && board.getField(x + 1, y - 1) == friend)
-				board.tab.get(x).set(y - 1, color.empty);
-		}
-		if (board.getField(x + 1, y) == enemy) {
-			if (board.getField(x, y) == friend && board.getField(x + 2, y) == friend
-					&& board.getField(x + 1, y - 1) == friend && board.getField(x + 1, y + 1) == friend)
-				board.tab.get(x + 1).set(y, color.empty);
-		}
-		if (board.getField(x - 1, y) == enemy) {
-			if (board.getField(x, y) == friend && board.getField(x - 2, y) == friend
-					&& board.getField(x - 1, y - 1) == friend && board.getField(x - 1, y + 1) == friend)
-				board.tab.get(x - 1).set(y, color.empty);
+		if (x == 0 || y == 0) {
+			cornerCase(x, y, enemy, friend);
+		} else {
+			if (board.getField(x, y + 1) == enemy) {
+				if (board.getField(x, y) == friend && board.getField(x, y + 2) == friend
+						&& board.getField(x - 1, y + 1) == friend && board.getField(x + 1, y + 1) == friend)
+					board.tab.get(x).set(y + 1, color.empty);
+			}
+			if (board.getField(x, y - 1) == enemy) {
+				if (board.getField(x, y) == friend && board.getField(x, y - 2) == friend
+						&& board.getField(x - 1, y - 1) == friend && board.getField(x + 1, y - 1) == friend)
+					board.tab.get(x).set(y - 1, color.empty);
+			}
+			if (board.getField(x + 1, y) == enemy) {
+				if (board.getField(x, y) == friend && board.getField(x + 2, y) == friend
+						&& board.getField(x + 1, y - 1) == friend && board.getField(x + 1, y + 1) == friend)
+					board.tab.get(x + 1).set(y, color.empty);
+			}
+			if (board.getField(x - 1, y) == enemy) {
+				if (board.getField(x, y) == friend && board.getField(x - 2, y) == friend
+						&& board.getField(x - 1, y - 1) == friend && board.getField(x - 1, y + 1) == friend)
+					board.tab.get(x - 1).set(y, color.empty);
+			}
 		}
 	}
 
-	// sprawdza warunki brzegowe
 	public void cornerCase(int x, int y, whosefield enemy, whosefield friend) {
 		int height = board.tab.get(0).size();
 		int width = board.tab.size();
