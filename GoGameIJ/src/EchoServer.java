@@ -78,16 +78,29 @@ public class EchoServer {
 
 			ServerClient actualPlayer = client1;
 			boolean end = false;
+			boolean goodPosition = true;
 			while (!end) {
 				while (true) {
 					actualPlayer.Write(new Command("MOVE", board));
 					Command c = actualPlayer.Read();
 					m1.getData(c.getX(), c.getY(), actualPlayer.color, board);
-					m1.game();
-					if (c.type.equals("MOVE") && board.putPawn(actualPlayer.color, c.getX(), c.getY())) {
-						actualPlayer.Write(new Command(actualPlayer.color == whosefield.white ? "W" : "B", board));
 
-						break;
+					if (c.type.equals(
+							"MOVE")) { /*
+										 * && board.putPawn(actualPlayer. color,
+										 * c.getX(), c.getY())
+										 */
+						// actualPlayer.Write(new Command(actualPlayer.color ==
+						// whosefield.white ? "W" : "B", board));
+						boolean result = m1.game();
+						if (result == true) {
+							board = m1.getBoard();
+							result = false;
+							// board.putPawn(actualPlayer.color, c.getX(),
+							// c.getY());
+							break;
+						}
+
 					}
 
 				}
