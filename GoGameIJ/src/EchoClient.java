@@ -153,7 +153,7 @@ public class EchoClient implements Runnable
 						});
 						break;
 					case "ENDGAME":
-
+						movemaking = false;
 						Platform.runLater(() -> {
 							Alert alert = new Alert(Alert.AlertType.INFORMATION);
 							alert.setTitle("Info");
@@ -164,6 +164,7 @@ public class EchoClient implements Runnable
 						end = true;
 						break;
 					case "GIVEUP":
+						movemaking = false;
 						Platform.runLater(() -> {
 							Alert alert = new Alert(Alert.AlertType.INFORMATION);
 							alert.setTitle("Your opponent gave up");

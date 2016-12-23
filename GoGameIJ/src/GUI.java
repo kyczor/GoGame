@@ -133,6 +133,18 @@ public class GUI extends Application
 		countPoints.setPrefWidth(100);
 		panel1.getChildren().add(countPoints);
 		VBox.setMargin(countPoints, new Insets(50,0,0,0));
+		countPoints.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("It's not that easy");
+				alert.setHeaderText("This feature is not available... yet");
+				alert.setContentText("You have to do it YOURSELF.");
+				alert.showAndWait();
+			}
+		});
 
 		Button pass = new Button("Pass");
 		pass.setPrefWidth(100);
