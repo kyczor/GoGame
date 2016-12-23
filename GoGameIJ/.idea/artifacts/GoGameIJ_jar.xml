@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="GoGameIJ:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/GoGameIJ_jar</output-path>
+    <root id="archive" name="GoGameIJ.jar">
+      <element id="module-output" name="GoGameIJ" />
+    </root>
+  </artifact>
+</component>
