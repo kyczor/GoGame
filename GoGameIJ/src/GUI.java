@@ -21,6 +21,7 @@ import java.util.Optional;
 import static java.awt.SystemColor.text;
 
 /**
+ * A whole GUI.
  * Created by Karola on 2016-12-20.
  */
 public class GUI extends Application
@@ -35,6 +36,9 @@ public class GUI extends Application
 
 	public EchoClient client;
 
+	/**
+	 * Constructor (empty)
+	 */
 	public GUI()
 	{
 		//client = new EchoClient("localhost", 9000, this);
@@ -54,6 +58,10 @@ public class GUI extends Application
 //		fields.get(2).set(3, whoseField.black);
 	}
 
+	/**
+	 * Main method
+	 * @param args initial arguments
+	 */
 	public static void main(String[] args)
 	{
 		launch(args);
@@ -90,6 +98,9 @@ public class GUI extends Application
 		//1 element: getkey , 2 element: getvalue
 	}
 
+	/**
+	 * A function that sets the left panel with buttons.
+	 */
 	private void setLeftPanel()
 	{
 
@@ -106,6 +117,9 @@ public class GUI extends Application
 		VBox.setMargin(giveUp, new Insets(150,0,0,0));
 		giveUp.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
+			/**
+			 * @param event mouse event (a button "giveup" clicked)
+			 */
 			@Override
 			public void handle(MouseEvent event)
 			{
@@ -115,26 +129,31 @@ public class GUI extends Application
 		});
 
 
-		Button endgame = new Button("End game");
-		endgame.setPrefWidth(100);
-		panel1.getChildren().add(endgame);
-		VBox.setMargin(endgame, new Insets(50,0,0,0));
-		endgame.setOnMouseClicked(new EventHandler<MouseEvent>()
-		{
-			@Override
-			public void handle(MouseEvent event)
-			{
-				Command command = new Command("ENDGAME", board);
-				client.SendCommand(command);
-			}
-		});
+//		Button endgame = new Button("End game");
+//		endgame.setPrefWidth(100);
+//		panel1.getChildren().add(endgame);
+//		VBox.setMargin(endgame, new Insets(50,0,0,0));
+//		endgame.setOnMouseClicked(new EventHandler<MouseEvent>()
+//		{
+//			@Override
+//			public void handle(MouseEvent event)
+//			{
+//				Command command = new Command("ENDGAME", board);
+//				client.SendCommand(command);
+//			}
+//		});
 
+		//now it does nothing since we didn't manage to finish all the game rules
 		Button countPoints = new Button("Count points");
 		countPoints.setPrefWidth(100);
 		panel1.getChildren().add(countPoints);
 		VBox.setMargin(countPoints, new Insets(50,0,0,0));
 		countPoints.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
+			/**
+			 *
+			 * @param event mouse event (a button "countpoints" clicked)
+			 */
 			@Override
 			public void handle(MouseEvent event)
 			{
@@ -152,6 +171,10 @@ public class GUI extends Application
 		VBox.setMargin(pass, new Insets(50,0,0,0));
 		pass.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
+			/**
+			 *
+			 * @param event mouse event (a button "pass" clicked)
+			 */
 			@Override
 			public void handle(MouseEvent event)
 			{
@@ -165,6 +188,11 @@ public class GUI extends Application
 
 	}
 
+	/**
+	 * Sets the whole dialog window.
+	 * The window appears before you start the game and lets you choose board size (and opponent type, though we didn't manage to create any bot :<  )
+	 * WARNING: The board is being created at a size THAT HAS BEEN SELECTED FIRST. It doesn't matter what the other player chooses. (It's not a bug, it's a feature, OF COURSE. Latecomers must be punished)
+	 */
 	public void setDialog()
 	{
 		dialogwin = new Dialog<>();
@@ -216,6 +244,10 @@ public class GUI extends Application
 		);
 	}
 
+	/**
+	 *
+	 * @param fboard board on which a player clicked
+	 */
 	public void drawBoard(Board fboard)
 	{
 		this.board = fboard;
@@ -242,6 +274,11 @@ public class GUI extends Application
 		});
 	}
 
+	/**
+	 * Draws a board (at a selected size) with a blue background. Fills the board with pawns at their actual positions.
+	 * @param gc Graphics context that is needed to be passed
+	 * @param board actual board to be repainted
+	 */
 	private void drawShapes(GraphicsContext gc, Board board)
 	{
 		double size = board.getSize();

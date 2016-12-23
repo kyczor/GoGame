@@ -7,16 +7,42 @@ import java.util.ArrayList;
 /**
  * Created by Karola on 2016-12-21.
  */
+
+/**
+ * This class is supposed to pass specific commands from client to server and the other way around.
+ */
 public class Command implements Serializable {
 	String type = "";
 	Board board;
 	int x = -1, y = -1;
 
+	/**
+	 * @return x (column)
+	 */
+	public int getX()
+	{return x;}
+
+	/**
+	 * @return y (row)
+	 */
+	public int getY()
+	{return y;}
+	/**
+	 * Constructor
+	 * @param type type of command
+	 * @param board actual board
+	 */
 	public Command(String type, Board board) {
 		this.type = type;
 		this.board = board;
 	}
 
+	/**
+	 * (Overloaded) Constructor
+	 * @param type type of command (MOVE)
+	 * @param x column of chosen move
+	 * @param y row of chosen move
+	 */
 	public Command(String type, int x, int y){
 		this.type = type;
 		this.x = x;
@@ -24,18 +50,25 @@ public class Command implements Serializable {
 		board = new Board(1);
 	}
 
-
+	/**
+	 * @return type of command
+	 */
 	public String getType() {
 		return type;
 	}
 
-	public Board getBoard() {
+	/**
+	 * @return actual board
+	 */
+	public Board getBoard()
+	{
 		return board;
 	}
 
-	public int getX(){return x;}
-	public int getY(){return y;}
-
+	/**
+	 * @param oos output stream to be sent
+	 * @throws IOException
+	 */
 	private void writeObject(ObjectOutputStream oos)
 			throws IOException {
 		oos.writeObject(type);
@@ -51,6 +84,12 @@ public class Command implements Serializable {
 		oos.writeObject(y);
 	}
 
+	/**
+	 *
+	 * @param ois input stream that is being read
+	 * @throws ClassNotFoundException exception1
+	 * @throws IOException exception2
+	 */
 	private void readObject(ObjectInputStream ois)
 			throws ClassNotFoundException, IOException {
 		type = (String) ois.readObject();

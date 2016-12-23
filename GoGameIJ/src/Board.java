@@ -36,6 +36,10 @@ public class Board implements Serializable
 		}
 	}
 
+	/**
+	 * Constructor.
+	 * @param arr array of enum fields
+	 */
 	public Board(whosefield[][] arr)
 	{
 		this.i = arr.length;
@@ -55,6 +59,13 @@ public class Board implements Serializable
 		return i;
 	}
 
+	/**
+	 *
+	 * @param col color of pawn
+	 * @param x column (of pawn)
+	 * @param y row (of pawn)
+	 * @return true if there is an empty field, false if the field is occupied
+	 */
 	public boolean putPawn(whosefield col, int x, int y)
 	{
 		if (getField(x, y) == whosefield.empty)
@@ -65,12 +76,22 @@ public class Board implements Serializable
 		return false;
 	}
 
+	/**
+	 *
+	 * @param x column
+	 * @param y row
+	 * @return returns enum of whose field it is
+	 */
 	public whosefield getField(int x, int y)
 	{
 		return tab.get(x).get(y);
 	}
 
-
+	/**
+	 *
+	 * @param oos output stream to be sent
+	 * @throws IOException
+	 */
 	private void writeObject(ObjectOutputStream oos)
 			throws IOException
 	{
@@ -84,6 +105,12 @@ public class Board implements Serializable
 		}
 	}
 
+	/**
+	 *
+	 * @param ois input stream that is being read
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	private void readObject(ObjectInputStream ois)
 			throws ClassNotFoundException, IOException
 	{
@@ -100,7 +127,10 @@ public class Board implements Serializable
 
 	}
 
-
+	/**
+	 *
+	 * @return converts array of arrays into array
+	 */
 	public whosefield[][] toArray()
 	{
 		whosefield[][] r = new whosefield[i][i];

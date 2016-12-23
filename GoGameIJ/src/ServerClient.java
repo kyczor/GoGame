@@ -16,7 +16,7 @@ public class ServerClient
 	private ObjectOutputStream oos;
 	
 	/**
-	 * Reads the output stream and makes it an input stream to another class
+	 * Passes the stream
 	 * @param socket Socket
 	 * @throws IOException handled by Exception class
 	 */
@@ -39,6 +39,9 @@ public class ServerClient
 		oos.writeObject(o);
 	}
 
+	/**
+	 * try to flush
+	 */
 	public void flush()
 	{
 		try
@@ -54,7 +57,7 @@ public class ServerClient
 
 	/**
 	 * 
-	 * @param b
+	 * @param b board to be written
 	 * @throws IOException
 	 */
 	public void WriteAsBoard(Board b) throws IOException

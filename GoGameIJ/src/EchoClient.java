@@ -35,8 +35,9 @@ import java.io.*;
 import java.net.*;
 
 /**
- * A client that demands connection with the server. In the future it's going to contain the whole GUI.
- * When a player sends a "bye"-message, it shuts itself down.
+ * A client that demands connection with the server. Connects itself with GUI.
+ * It can send commands to server.
+ * Also, it handles all the received commands.
  *
  * @author Karola
  * @see ServerClient - connects clients with server
@@ -49,7 +50,14 @@ public class EchoClient implements Runnable
 	private volatile boolean end;
 	private GUI gui;
 	private boolean movemaking = false;
+	private boolean gaveup = false;
 
+	/**
+	 * EchoClient's constructor. Used to connect properly with GUI.
+	 * @param host host of the game
+	 * @param port chosen port
+	 * @param gui Graphic Interface of the whole game
+	 */
 	public EchoClient(String host, int port, GUI gui)
 	{
 		this.gui = gui;
@@ -69,7 +77,12 @@ public class EchoClient implements Runnable
 		new Thread(this).start();
 	}
 
-
+	/**
+	 *
+	 * @param command command sent to server.
+	 * A function that sends appropriate commands to server.
+	 * The commands can be of various types: MOVE, PASS, GIVEUP, ENDGAME, HUMAN_SIZE (which means that user choosed to play with another person and picked one of the available sizes), BOT_SIZE (which is similar to HUMAN_SIZE), ...
+	 */
 	public void SendCommand(Command command)
 	{
 		try
@@ -77,26 +90,36 @@ public class EchoClient implements Runnable
 			if (command.type.equals("HUMAN_SIZE") || command.type.equals("BOT_SIZE"))
 			{
 				oos.writeObject(command);
-			} else if (movemaking)
-			{
-				movemaking = false;
-				oos.writeObject(command);
 			}
-			if (command.type.equals("ENDGAME"))
+			else if (movemaking)
 			{
+				if(!gaveup)
+				{
+					movemaking = false;
+					oos.writeObject(command);
+				}
+				else
+				{
 
-				Platform.runLater(() -> {
-					Alert alert = new Alert(Alert.AlertType.INFORMATION);
-					alert.setTitle("Info");
-					alert.setHeaderText("The game has ended");
-					alert.setContentText("You have been disconnected.");
-					alert.showAndWait();
-				});
-				end = true;
-
+				}
 			}
+//			if (command.type.equals("ENDGAME"))
+//			{
+//				oos.writeObject(command);
+//				System.out.println("FAZA 1");
+//				Platform.runLater(() -> {
+//					Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//					alert.setTitle("Info");
+//					alert.setHeaderText("The game has ended");
+//					alert.setContentText("You have been disconnected.");
+//					alert.showAndWait();
+//				});
+//				end = true;
+//
+//			}
 			if (command.type.equals("GIVEUP"))
 			{
+				movemaking = true;
 				Platform.runLater(() -> {
 					Alert alert = new Alert(Alert.AlertType.INFORMATION);
 					alert.setTitle("You gave up");
@@ -104,6 +127,8 @@ public class EchoClient implements Runnable
 					alert.setContentText("You have been disconnected.");
 					alert.showAndWait();
 				});
+				oos.writeObject(command);
+				movemaking = false;
 				end = true;
 			}
 		} catch (Exception e)
@@ -113,10 +138,7 @@ public class EchoClient implements Runnable
 	}
 
 	/**
-	 * Main Client method.
-	 * Connects to the game's server. Repeatedly reads objects (table) sent by server and (TODO GUI) displays it on the player's screen.
-	 * After a player makes a move - sends a string with appropriate message to server.
-	 * When the message is "bye", the client closes itself.
+	 * Handles all received commands. If the command type is GIVEUP or ENDGAME - it simply closes all sockets and writes a message that explains how the game has ended.
 	 */
 	@Override
 	public void run()
@@ -152,19 +174,20 @@ public class EchoClient implements Runnable
 							gui.drawBoard(c.board);
 						});
 						break;
-					case "ENDGAME":
-						movemaking = false;
-						Platform.runLater(() -> {
-							Alert alert = new Alert(Alert.AlertType.INFORMATION);
-							alert.setTitle("Info");
-							alert.setHeaderText("The game has ended");
-							alert.setContentText("You have been disconnected.");
-							alert.showAndWait();
-						});
-						end = true;
-						break;
+//					case "ENDGAME":
+//						movemaking = false;
+//						Platform.runLater(() -> {
+//							Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//							alert.setTitle("Info");
+//							alert.setHeaderText("The game has ended");
+//							alert.setContentText("You have been disconnected.");
+//							alert.showAndWait();    //creates a pop up window which blocks any "game actions" until it is closed
+//						});
+//						end = true;
+//						break;
 					case "GIVEUP":
 						movemaking = false;
+						gaveup = true;
 						Platform.runLater(() -> {
 							Alert alert = new Alert(Alert.AlertType.INFORMATION);
 							alert.setTitle("Your opponent gave up");
