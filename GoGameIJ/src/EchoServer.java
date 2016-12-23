@@ -80,29 +80,29 @@ public class EchoServer {
 				while (true) {
 					actualPlayer.Write(new Command("MOVE", board));
 					Command c = actualPlayer.Read();
-					if (c.type.equals("MOVE") && board.putPawn(actualPlayer.color, c.getX(), c.getY()))     //after the implementation of "making move" is done - putparn has to be commented
+					m1.getData(c.getX(), c.getY(), actualPlayer.color, board);
+					if (c.type.equals("MOVE")) // after the implementation of
+												// "making move" is done -
+												// putparn has to be commented
 					{
-						m1.getData(c.getX(), c.getY(), actualPlayer.color, board);
-						//TODO: wykonac ruch i wykonac ponizsze jesli sie udalo.
-						if (true) // udany ruch
+						boolean result = m1.game();
+
+						if (result) // udany ruch
 						{
+							board = m1.getBoard();
 							actualPlayer.Write(new Command(actualPlayer.color == whosefield.white ? "W" : "B", board));
 							break;
+						} else {
+							System.out.println("Spróbuj ponowanie");
 						}
-					}
-					else if (c.type.equals("PASS"))
-					{
-						break;  //doesn't have to do anything
-					}
-					else if (c.type.equals("ENDGAME"))
-					{
+					} else if (c.type.equals("PASS")) {
+						break; // doesn't have to do anything
+					} else if (c.type.equals("ENDGAME")) {
 						Command closeit = new Command("ENDGAME", board);
 						client1.Write(closeit);
 						client2.Write(closeit);
 						break;
-					}
-					else if (c.type.equals("GIVEUP"))
-					{
+					} else if (c.type.equals("GIVEUP")) {
 						Command lethimknow = new Command("GIVEUP", board);
 						client1.Write(lethimknow);
 						client2.Write(lethimknow);

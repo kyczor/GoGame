@@ -28,9 +28,12 @@ public class Move /* implements Functions */ {
 		int col = x;
 		int row = y;
 		whosefield enemyColor = color == color.black ? color.white : color.black;
-		board.tab.get(x).set(y, playerColor);
-		removePlayer(x, y, enemyColor, playerColor);
-		return true;
+		if (board.getField(col, row) == color.empty) {
+			board.tab.get(x).set(y, playerColor);
+			removePlayer(x, y, enemyColor, playerColor);
+			return true;
+		}
+		return false;
 	}
 
 	public Board getBoard() {
@@ -41,22 +44,26 @@ public class Move /* implements Functions */ {
 		if (board.getField(x, y + 1) == enemy) {
 			if (board.getField(x, y) == friend && board.getField(x, y + 2) == friend
 					&& board.getField(x - 1, y + 1) == friend && board.getField(x + 1, y + 1) == friend)
-				board.putPawn(whosefield.empty, x, y + 1);
+				board.tab.get(x).set(y + 1, color.empty);
+			// board.putPawn(whosefield.empty, x, y + 1);
 		}
 		if (board.getField(x, y - 1) == enemy) {
 			if (board.getField(x, y) == friend && board.getField(x, y - 2) == friend
 					&& board.getField(x - 1, y - 1) == friend && board.getField(x + 1, y - 1) == friend)
-				board.putPawn(whosefield.empty, x, y - 1);
+				board.tab.get(x).set(y - 1, color.empty);
+			// board.putPawn(whosefield.empty, x, y - 1);
 		}
 		if (board.getField(x + 1, y) == enemy) {
 			if (board.getField(x, y) == friend && board.getField(x + 2, y) == friend
 					&& board.getField(x + 1, y - 1) == friend && board.getField(x + 1, y + 1) == friend)
-				board.putPawn(whosefield.empty, x + 1, y);
+				board.tab.get(x + 1).set(y, color.empty);
+			// board.putPawn(whosefield.empty, x + 1, y);
 		}
 		if (board.getField(x - 1, y) == enemy) {
 			if (board.getField(x, y) == friend && board.getField(x - 2, y) == friend
 					&& board.getField(x - 1, y - 1) == friend && board.getField(x - 1, y + 1) == friend)
-				board.putPawn(whosefield.empty, x - 1, y);
+				board.tab.get(x - 1).set(y, color.empty);
+			// board.putPawn(whosefield.empty, x - 1, y);
 		}
 	}
 }
