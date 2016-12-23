@@ -190,7 +190,7 @@ public class GUI extends Application
 
 	/**
 	 * Sets the whole dialog window.
-	 * The window appears before you start the game and lets you choose board size (and opponent type, though we didn't manage to create any bot :<  )
+	 * The window appears before you start the game and lets you choose board size (and opponent type, though we didn't manage to create any bot   )
 	 * WARNING: The board is being created at a size THAT HAS BEEN SELECTED FIRST. It doesn't matter what the other player chooses. (It's not a bug, it's a feature, OF COURSE. Latecomers must be punished)
 	 */
 	public void setDialog()

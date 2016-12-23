@@ -20,7 +20,6 @@ public class Board implements Serializable
 
 	/**
 	 * @param i size of the table defined by user
-	 * @return returns updated table (ixi) filled with 0's
 	 */
 	public Board(int i)
 	{
