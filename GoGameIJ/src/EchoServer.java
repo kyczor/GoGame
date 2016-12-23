@@ -3,60 +3,55 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 /**
- * SERVER
- * Connects two clients.
- * (Should be) Connected with Move class (in order to apply all the game rules)
+ * SERVER Connects two clients. (Should be) Connected with Move class (in order
+ * to apply all the game rules)
  *
  * @author Karola
  * @see ServerClient - connects server with two clients
  */
-public class EchoServer
-{
+public class EchoServer {
 	private ServerSocket server;
 	private ServerClient client1 = null, client2 = null;
 	private Move m1 = new Move();
 
 	/**
 	 * Creates a socket (at a specific port)
-	 * @param portnum Port number
+	 * 
+	 * @param portnum
+	 *            Port number
 	 */
-	public EchoServer(int portnum)
-	{
-		try
-		{
+	public EchoServer(int portnum) {
+		try {
 			server = new ServerSocket(portnum);
-		} catch (Exception err)
-		{
+		} catch (Exception err) {
 			System.out.println(err);
 		}
 	}
 
 	/**
-	 * @param b object that is a game board
-	 * @param c object that connects two clients with my server
+	 * @param b
+	 *            object that is a game board
+	 * @param c
+	 *            object that connects two clients with my server
 	 * @throws IOException
 	 */
-	void SendBoardToClient(Board b, ServerClient c) throws IOException
-	{
+	void SendBoardToClient(Board b, ServerClient c) throws IOException {
 		c.WriteAsBoard(b);
 	}
 
 	/**
-	 * Creates new Board. Starts the game and sets a first player.
-	 * Handles all the commands sent by clients.
+	 * Creates new Board. Starts the game and sets a first player. Handles all
+	 * the commands sent by clients.
 	 */
-	public void serve()
-	{
+	public void serve() {
 		int x = -1, y = -1;
 		System.out.println("Server started");
 		Board board = new Board(5);
-		try
-		{
+		try {
 			if (client1 == null)
 				client1 = new ServerClient(server.accept());
 			Command command = client1.Read();
-			if (command.type.equals("HUMAN_SIZE"))
-			{
+			if (command.type.equals("HUMAN_SIZE")) {
 				board = command.board;
 				client1.Write(new Command("B", board)); // sends an empty board
 				// to both players
@@ -74,36 +69,33 @@ public class EchoServer
 
 			ServerClient actualPlayer = client1;
 			boolean end = false;
-			while (!end)
-			{
-				while (true)
-				{
+			while (!end) {
+				while (true) {
 					actualPlayer.Write(new Command("MOVE", board));
 					Command c = actualPlayer.Read();
-					if (c.type.equals("MOVE") && board.putPawn(actualPlayer.color, c.getX(), c.getY()))     //after the implementation of "making move" is done - putparn has to be commented
+					m1.getData(c.getX(), c.getY(), actualPlayer.color, board);
+					if (c.type.equals("MOVE")) // after the implementation of
+												// "making move" is done -
+												// putparn has to be commented
 					{
-						m1.getData(c.getX(), c.getY(), actualPlayer.color, board);
-						//TODO: wykonac ruch i wykonac ponizsze jesli sie udalo.
-						if (true) // udany ruch
+						boolean result = m1.game();
+
+						if (result) // udany ruch
 						{
+							board = m1.getBoard();
 							actualPlayer.Write(new Command(actualPlayer.color == whosefield.white ? "W" : "B", board));
 							break;
+						} else {
+							System.out.println("Spróbuj ponowanie");
 						}
-					}
-					else if (c.type.equals("PASS"))
-					{
-						break;  //doesn't have to do anything
-					}
-					else if (c.type.equals("ENDGAME"))
-					{
-//						Command closeit = new Command("ENDGAME", board);
-//						client1.Write(closeit);
-//
-//						client2.Write(closeit);
-
+					} else if (c.type.equals("PASS")) {
+						break; // doesn't have to do anything
+					} else if (c.type.equals("ENDGAME")) {
+						Command closeit = new Command("ENDGAME", board);
+						client1.Write(closeit);
+						client2.Write(closeit);
 						break;
-					} else if (c.type.equals("GIVEUP"))
-					{
+					} else if (c.type.equals("GIVEUP")) {
 						Command lethimknow = new Command("GIVEUP", board);
 						client1.Write(lethimknow);
 						client2.Write(lethimknow);
@@ -118,8 +110,7 @@ public class EchoServer
 				else
 					actualPlayer = client1;
 			}
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println("Cannot connect two clients");
 		}
 		System.out.println("Server stoped");
@@ -128,10 +119,10 @@ public class EchoServer
 
 	/**
 	 * Main Server method
+	 * 
 	 * @param args
 	 */
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		EchoServer s = new EchoServer(9000);
 		s.serve();
 	}
