@@ -1,0 +1,21 @@
+
+@main(null) {
+    
+    @if(flash.containsKey("error")) {
+        
+        <div class="alert-message error">
+            <p>
+                <strong>Oops!</strong> @flash.get("error")
+            </p>
+        </div>
+        
+    }
+        
+    <div style = 'background: #ffccff; border-color:#ff0066; padding: 30px'>
+        <p align="center">
+            <strong>GO game!</strong> 
+            To start, choose a username and sign in using the top right form.
+        </p>
+    </div>
+    
+}
