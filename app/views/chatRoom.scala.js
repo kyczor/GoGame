@@ -11,7 +11,7 @@ $(function() {
     }
 
 	var mymove = false
-	
+	var displayed = false	//jesli juz napisalo ci, ze przegrales to nic. jesli nie bylo nic napisane, to pisze ze wygrales
     var receiveEvent = function(event) {
         var data = JSON.parse(event.data)
 
@@ -20,21 +20,32 @@ $(function() {
 			pawnarray = data.board.board
 			drawBoard()
 			mymove = true
+			
 		}
 		else if(data.type == "GIVEUP")
 		{
 			pawnarray = data.board.board
-			drawboward;
+			drawBoard()
 			mymove = false
+			if(displayed == false)
+			{
+				// wyswietlic ze wygrales
+				displayed = true;
+				document.getElementById("text1").innerHTML = "YOU WON"
+
+			}
 		}
 		else if(data.type == "W")
 		{
 			playercol = 2
+			pawnarray = data.board.board
+			drawBoard()
 		}
 		else if(data.type == "B")
 		{
 			playercol = 1
-			mymove = true
+			pawnarray = data.board.board
+			drawBoard()
 		}
     /*    // Handle errors
         if(data.error) {
@@ -64,7 +75,7 @@ $(function() {
 	var cursorx=-2
 	var cursory=-2
 	var a = 601
-	var playercol = 2	//1-czarny, 2-bialy
+	var playercol = 1	//1-czarny, 2-bialy
 	var field = a/9.0
 	// 0-puste, 1-czarny, 2-bialy
 	var pawnarray = new Array(9)
@@ -95,8 +106,8 @@ $(function() {
 					boardCode += '<circle cx="' + (j*field + field/2) + '" cy="' + (k*field + field/2) + '" r="'+ field/4 + '" stroke="white" stroke-width="3" fill="#F5F5F5" />'
 				}
 			}
-		
-		boardCode+= '<rect x="' + cursorx*field + '" y="' + cursory*field + '" width="'+ field +'" height="' + field + '" style="fill:#ff1a75;stroke:#ff0066;stroke-width:5;fill-opacity:0.4;stroke-opacity:0.5" />'		
+		if(mymove == true)
+			boardCode+= '<rect x="' + cursorx*field + '" y="' + cursory*field + '" width="'+ field +'" height="' + field + '" style="fill:#ff1a75;stroke:#ff0066;stroke-width:5;fill-opacity:0.4;stroke-opacity:0.5" />'		
 		boardCode += '</svg>'
 		
 		document.getElementById("board").innerHTML = boardCode
@@ -104,14 +115,13 @@ $(function() {
 	
 	drawBoard()
 	
+	
+	
 	document.getElementById("board").onmousemove = function(event)
 	{
-		if(mymove == true)
-		{
-			cursorx = parseInt((event.screenX - document.getElementById("board").getBoundingClientRect().left)/field)
-			cursory = parseInt((event.screenY - document.getElementById("board").getBoundingClientRect().top - 85)/field)
-			drawBoard()			
-		}
+		cursorx = parseInt((event.screenX - document.getElementById("board").getBoundingClientRect().left)/field)
+		cursory = parseInt((event.screenY - document.getElementById("board").getBoundingClientRect().top - 85)/field)
+		drawBoard()			
 	}
 	
 	document.getElementById("board").onmousedown = function(event)
@@ -121,6 +131,7 @@ $(function() {
 			chatSocket.send(JSON.stringify({type: "MOVE", x:cursorx, y:cursory}))
 			mymove = false
 		}
+	
 	}
 	//	pawnarray[cursorx][cursory] = playercol
 		
@@ -142,6 +153,9 @@ $(function() {
 	{
 		chatSocket.send(JSON.stringify({type:"GIVEUP", board:board}))
 		mymove = false
+		displayed = true
+		//wyswietlic ze przegrales
+		document.getElementById("text1").innerHTML = "YOU LOST"
 	}
 	
     $("#nr").keypress(handleReturnKey)

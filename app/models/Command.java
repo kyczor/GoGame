@@ -120,8 +120,11 @@ public class Command implements java.io.Serializable {
 	public Command(JsonNode jsonNode)
 	{
 		type = jsonNode.get("type").textValue();
-		x = jsonNode.get("x").asInt();
-		y = jsonNode.get("y").asInt();
+		if(type.equals("MOVE"))
+		{
+			x = jsonNode.get("x").asInt();
+			y = jsonNode.get("y").asInt();
+		}
 		board = jsonNode.get("board") == null ? null : new Board(jsonNode.get("board"));
 	}
 	public JsonNode toJson(){
@@ -130,12 +133,18 @@ public class Command implements java.io.Serializable {
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode jsonNode = mapper.createObjectNode();
 		
-		
+		try{
+			
 //		jsonNode.put("key", "value");
 		jsonNode.put("type", type);
 		jsonNode.put("x", x);
 		jsonNode.put("y", y);
 		if (board != null )jsonNode.put("board", board.toJson());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		
 		return jsonNode;

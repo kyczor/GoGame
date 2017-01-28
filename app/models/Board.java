@@ -122,7 +122,8 @@ public class Board implements Logic, java.io.Serializable {
 		jsonNode.put("board", boardI);
 		
 		ArrayNode allBlackI = mapper.createArrayNode();
-
+		if(allBlackLists == null)
+			jsonNode.put("allBlack", "null");
 		for (int i = 0; i < allBlackLists.size(); i++) {
 			ArrayNode allBlackJ = mapper.createArrayNode();
 			for (int j = 0; j < allBlackLists.get(i).size(); j++) {
@@ -133,6 +134,8 @@ public class Board implements Logic, java.io.Serializable {
 		jsonNode.put("allBlack", allBlackI);
 
 		ArrayNode allWhiteI = mapper.createArrayNode();
+		if(allWhiteLists == null)
+			jsonNode.put("allWhite", "null");
 		for (int i = 0; i < allWhiteLists.size(); i++) {
 			ArrayNode allWhiteJ = mapper.createArrayNode();
 			for (int j = 0; j < allWhiteLists.get(i).size(); j++) {
@@ -143,11 +146,20 @@ public class Board implements Logic, java.io.Serializable {
 		jsonNode.put("allWhite", allWhiteI);
 
 		ArrayNode friendsLocationI = mapper.createArrayNode();
-		if (friendsLocation == null)
+		if (friendsLocation == null || friendsLocation.length == 0)
+		{
 			jsonNode.put("friendsLocation", "null");
-		else {
-			for (int i = 0; i < friendsLocation.length; i++) {
-				friendsLocationI.add(friendsLocation[i].toJson());
+		}
+		else 
+		{
+			for (int i = 0; i < friendsLocation.length; i++) 
+			{
+				if(friendsLocation[i] == null)
+				{
+					//friendsLocationI.add("null");
+				}
+				else
+					friendsLocationI.add(friendsLocation[i].toJson());
 			}
 			jsonNode.put("friendsLocation", friendsLocationI);
 		}

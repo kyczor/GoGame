@@ -42,7 +42,7 @@ public class EchoServer   {
 				while (true) {
 					actualPlayer.Write(new Command("MOVE", board));
 					Command c = actualPlayer.Read();
-					session.setData(c.getY(), c.getX(), actualPlayer.color, board);
+					session.setData(c.getX(), c.getY(), actualPlayer.color, board);
 					if (c.type.equals("MOVE")) // after the implementation of
 												// "making move" is done -
 												// putparn has to be commented
@@ -65,10 +65,11 @@ public class EchoServer   {
 						client2.Write(closeit);
 						break;
 					} else if (c.type.equals("GIVEUP")) {
+						
 						Command lethimknow = new Command("GIVEUP", board);
 						client1.Write(lethimknow);
 						client2.Write(lethimknow);
-
+						end = true;
 						break;
 					}
 
@@ -106,7 +107,14 @@ public class EchoServer   {
 			try
 			{
 				client2 = new ServerClient(_in, _out) ;
-				serve();
+				//new Thread (()->serve());
+				//serve();
+			    Thread t1 = new Thread(new Runnable() {
+			         public void run() {
+			              serve();
+			         }
+			    });  
+			    t1.start();
 				
 			} catch (IOException e)
 			{
