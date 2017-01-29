@@ -1,0 +1,30 @@
+.mybutton
+{
+	width: 80px;
+	height: 40px;
+	background-image: url("tecza.png");
+	background-size:80px 40px;
+	background-repeat: repeat-x;
+	margin: 30px;
+}
+
+.mycell
+{
+	vertical-align: center;
+	padding-top: 200px;
+	background-image: url("tlo.png");
+	background-size: 173px 173px;
+	background-repeat: repeat-y;
+}
+
+.page-header
+{
+	background-image: url("konik2.png");
+	background-size: 74px 74px;
+	background-repeat: repeat-x;
+}
+
+#text1
+{
+	font-size: 30px;
+}

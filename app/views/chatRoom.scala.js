@@ -87,7 +87,7 @@ $(function() {
 	function drawBoard()	//rysuje plansze
 	{
 		
-		var boardCode = '<svg style = "background: #ffccff" width="' + a + '" height="' + a + '">'
+		var boardCode = '<svg style = "background: #ffeaff" width="' + a + '" height="' + a + '">'
 		for(var i=0; i<9; i++)
 		{
 			boardCode+= '<line x1="' + field/2.0 +'" y1="' + (field/2.0 + field*i) + '" x2="'+ (a-(field/2.0)) + '" y2="' + (field/2.0 + field*i) + '" style ="stroke:rgb(0,0,0);stroke-width:2" />' 
@@ -98,12 +98,12 @@ $(function() {
 			{
 				if(pawnarray[j][k] == 1)
 				{
-					boardCode += '<circle cx="' + (j*field + field/2) + '" cy="' + (k*field + field/2) + '" r="'+ field/4 + '" stroke="black" stroke-width="3" fill="#212121" />'
+					boardCode += '<circle cx="' + (j*field + field/2) + '" cy="' + (k*field + field/2) + '" r="'+ field/4 + '" stroke="fuchsia" stroke-width="1" fill="#212121" />'
 					
 				}
 				else if(pawnarray[j][k] == 2)
 				{
-					boardCode += '<circle cx="' + (j*field + field/2) + '" cy="' + (k*field + field/2) + '" r="'+ field/4 + '" stroke="white" stroke-width="3" fill="#F5F5F5" />'
+					boardCode += '<circle cx="' + (j*field + field/2) + '" cy="' + (k*field + field/2) + '" r="'+ field/4 + '" stroke="fuchsia" stroke-width="1" fill="#F5F5F5" />'
 				}
 			}
 		if(mymove == true)
